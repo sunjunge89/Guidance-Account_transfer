@@ -291,7 +291,7 @@
   </div>
   <p class="lock-note" id="lock-note">🔒 가이드를 보려면 먼저 임직원 인증이 필요합니다.</p>
 
-  <button class="verify-cta" onclick="goTo('verify')">임직원 인증</button>
+  <button class="verify-cta" id="verify-cta" onclick="goTo('verify')">임직원 인증</button>
 </section>
 
 <!-- SUB PAGES (coming soon) -->
@@ -421,6 +421,9 @@
     });
     const note = document.getElementById('lock-note');
     if (note) note.style.display = verified ? 'none' : 'block';
+
+    const verifyCta = document.getElementById('verify-cta');
+    if (verifyCta) verifyCta.style.display = verified ? 'none' : 'inline-block';
 
     const badge = document.getElementById('user-badge');
     const emailEl = document.getElementById('user-email');
