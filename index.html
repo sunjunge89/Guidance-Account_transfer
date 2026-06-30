@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>구글애즈 계정 이관 가이드 - KTnasmedia</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<style>
+  :root {
+    --yellow: #FBB417;
+    --black: #111111;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--yellow);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;
+    color: var(--black);
+    min-height: 100vh;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 40px;
+    position: relative;
+    z-index: 10;
+  }
+  .nav-left, .nav-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .pill {
+    background: #fff8e8;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .pill.dark {
+    background: var(--black);
+    color: #fff;
+  }
+  .logo {
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 28px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--black);
+  }
+
+  /* page sections */
+  .page {
+    display: none;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 40px 100px;
+    text-align: center;
+    animation: fadeIn 0.35s ease;
+  }
+  .page.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-size: 32px;
+    line-height: 1.3;
+    margin-bottom: 50px;
+  }
+  .hero-box {
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 28px;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 30px;
+    margin-bottom: 30px;
+  }
+  .hero-box p {
+    font-size: 44px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .grid button.box {
+    display: block;
+    width: 100%;
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 18px;
+    height: 130px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    transition: transform 0.15s ease;
+  }
+  .grid button.box:hover {
+    transform: translateY(-4px);
+  }
+
+  /* sub pages (coming soon) */
+  .sub-hero {
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 28px;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 30px;
+  }
+  .sub-hero p {
+    font-size: 48px;
+    line-height: 1.4;
+    margin: 0 0 24px;
+    font-weight: bold;
+  }
+  .sub-hero span {
+    font-size: 18px;
+    color: #555;
+  }
+  .back {
+    display: inline-block;
+    margin-top: 30px;
+    text-decoration: none;
+    color: var(--black);
+    background: var(--white);
+    border: 3px solid var(--black);
+    border-radius: 999px;
+    padding: 10px 24px;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-box p { font-size: 30px; }
+    header { flex-wrap: wrap; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-left"></div>
+  <button class="logo" onclick="goTo('home')">KTnasmedia</button>
+  <div class="nav-right">
+    <button class="pill dark" onclick="goTo('verify')">임직원 인증</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<section class="page active" id="home">
+  <h1>PencilBooth is the easiest way to<br>keep people up-to-date with your<br>art.</h1>
+
+  <div class="hero-box">
+    <p>구글애즈 계정 이관<br>가이드</p>
+  </div>
+
+  <div class="grid">
+    <button class="box" onclick="goTo('box1')"></button>
+    <button class="box" onclick="goTo('box2')"></button>
+    <button class="box" onclick="goTo('box3')"></button>
+    <button class="box" onclick="goTo('box4')"></button>
+  </div>
+</section>
+
+<!-- SUB PAGES (coming soon) -->
+<section class="page" id="box1">
+  <div class="sub-hero">
+    <p>Coming Soon</p>
+    <span>준비 중인 페이지입니다. (1)</span>
+  </div>
+  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+</section>
+
+<section class="page" id="box2">
+  <div class="sub-hero">
+    <p>Coming Soon</p>
+    <span>준비 중인 페이지입니다. (2)</span>
+  </div>
+  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+</section>
+
+<section class="page" id="box3">
+  <div class="sub-hero">
+    <p>Coming Soon</p>
+    <span>준비 중인 페이지입니다. (3)</span>
+  </div>
+  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+</section>
+
+<section class="page" id="box4">
+  <div class="sub-hero">
+    <p>Coming Soon</p>
+    <span>준비 중인 페이지입니다. (4)</span>
+  </div>
+  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+</section>
+
+<section class="page" id="verify">
+  <div class="sub-hero" style="min-height:auto; padding:50px 30px;">
+    <p style="font-size:32px;">임직원 인증</p>
+    <span style="margin-bottom:20px;">나스미디어 임직원만 입장 가능합니다. (@nasmedia.co.kr)</span>
+
+    <div id="verify-step1" style="width:100%; max-width:380px;">
+      <input type="email" id="verify-email" placeholder="xxxx@nasmedia.co.kr"
+        style="width:100%; padding:14px 16px; border:2px solid var(--black); border-radius:12px; font-family:inherit; font-size:15px; margin-bottom:14px;">
+      <button class="back" style="width:100%; margin-top:0;" onclick="sendCode()">인증 신청</button>
+      <p id="verify-error" style="font-size:14px; margin-top:10px; display:none;"></p>
+    </div>
+
+    <div id="verify-success" style="display:none;">
+      <p style="font-size:28px;">✅ 인증 완료</p>
+      <span>임직원 인증이 완료되었습니다. 가이드를 이용하실 수 있습니다.</span>
+    </div>
+  </div>
+  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+</section>
+
+<script>
+  function goTo(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    history.replaceState(null, '', '#' + id);
+  }
+
+  // ---- 임직원 인증 (구글 시트 연동) ----
+  const VERIFY_API_URL = 'https://script.google.com/macros/s/AKfycbyfppYvoIiSn4s_dDjgHUj8BSkiy0xrZ5mf1wBxJw7vV-rGEJu6L3Vxq7bXlPfQ3L_zXg/exec';
+
+  async function sendCode() {
+    const email = document.getElementById('verify-email').value.trim();
+    const errorEl = document.getElementById('verify-error');
+    const button = document.querySelector('#verify-step1 button.back');
+
+    const isValid = /^[a-zA-Z0-9._%+-]+@nasmedia\.co\.kr$/i.test(email);
+    if (!isValid) {
+      errorEl.textContent = '@nasmedia.co.kr 메일 주소만 사용 가능합니다.';
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+    button.textContent = '확인 중...';
+    button.disabled = true;
+
+    try {
+      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+
+      if (data.status === 'approved') {
+        document.getElementById('verify-step1').style.display = 'none';
+        document.getElementById('verify-success').style.display = 'block';
+      } else if (data.status === 'pending') {
+        errorEl.textContent = '신청이 접수되었습니다. 담당자 승인 후 입장 가능합니다.';
+        errorEl.style.color = '#1a7f37';
+        errorEl.style.display = 'block';
+      } else {
+        errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
+        errorEl.style.color = '#c0392b';
+        errorEl.style.display = 'block';
+      }
+    } catch (err) {
+      errorEl.style.color = '#c0392b';
+      errorEl.textContent = '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.';
+      errorEl.style.display = 'block';
+    }
+
+    button.textContent = '인증번호 받기';
+    button.disabled = false;
+  }
+
+  // support direct hash load / back-forward
+  window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && document.getElementById(hash)) {
+      goTo(hash);
+    }
+  });
+</script>
+
+</body>
+</html>
