@@ -243,10 +243,10 @@
     history.replaceState(null, '', '#' + id);
   }
 
-  // ---- 임직원 인증 (구글 시트 연동, JSONP 방식) ----
+  // ---- 임직원 인증 (구글 시트 연동, fetch 방식) ----
   const VERIFY_API_URL = 'https://script.google.com/macros/s/AKfycbwfDR10iH-wnl_jy2KWL-oTeTlULNzlffziXt-ipBVXS9hpvstKUtPa4Z8lLRyfhK_d6g/exec';
 
-  function sendCode() {
+  async function sendCode() {
     const email = document.getElementById('verify-email').value.trim();
     const errorEl = document.getElementById('verify-error');
     const button = document.querySelector('#verify-step1 button.back');
@@ -262,45 +262,21 @@
     button.textContent = '확인 중...';
     button.disabled = true;
 
-    const callbackName = 'verifyCallback_' + Date.now();
-    let finished = false;
-
-    window[callbackName] = function (data) {
-      finished = true;
+    try {
+      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`, {
+        method: 'GET',
+        redirect: 'follow'
+      });
+      const data = await res.json();
       handleVerifyResult(data, errorEl);
-      button.textContent = '인증 신청';
-      button.disabled = false;
-      delete window[callbackName];
-      script.remove();
-    };
-
-    const script = document.createElement('script');
-    script.src = `${VERIFY_API_URL}?email=${encodeURIComponent(email)}&callback=${callbackName}`;
-    script.onerror = function () {
-      if (finished) return;
+    } catch (err) {
       errorEl.style.color = '#c0392b';
       errorEl.textContent = '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.';
       errorEl.style.display = 'block';
-      button.textContent = '인증 신청';
-      button.disabled = false;
-      delete window[callbackName];
-      script.remove();
-    };
-    document.body.appendChild(script);
+    }
 
-    // 10초 내 응답 없으면 타임아웃 처리
-    setTimeout(() => {
-      if (!finished) {
-        finished = true;
-        errorEl.style.color = '#c0392b';
-        errorEl.textContent = '응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.';
-        errorEl.style.display = 'block';
-        button.textContent = '인증 신청';
-        button.disabled = false;
-        delete window[callbackName];
-        script.remove();
-      }
-    }, 10000);
+    button.textContent = '인증 신청';
+    button.disabled = false;
   }
 
   function handleVerifyResult(data, errorEl) {
