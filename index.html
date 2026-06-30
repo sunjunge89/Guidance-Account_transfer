@@ -243,16 +243,17 @@
     history.replaceState(null, '', '#' + id);
   }
 
-  // ---- 임직원 인증 (구글 시트 연동) ----
-  const VERIFY_API_URL = 'https://script.google.com/macros/s/AKfycbzkSHRD6P3GTrD7zQal2ihJc4Hbs2_bumJMfSilhVICkCiLSKlNng8ufM5geaWPvlE2tA/exec';
+  // ---- 임직원 인증 (구글 시트 연동, JSONP 방식) ----
+  const VERIFY_API_URL = 'https://script.google.com/macros/s/AKfycbwXtCBX3KhTWjIYjYBfKCH1dAKLGcMb6Et0eiWfjiWe6BQ6M4d66pIZEFxt6Seq9n66BA/exec';
 
-  async function sendCode() {
+  function sendCode() {
     const email = document.getElementById('verify-email').value.trim();
     const errorEl = document.getElementById('verify-error');
     const button = document.querySelector('#verify-step1 button.back');
 
     const isValid = /^[a-zA-Z0-9._%+-]+@nasmedia\.co\.kr$/i.test(email);
     if (!isValid) {
+      errorEl.style.color = '#c0392b';
       errorEl.textContent = '@nasmedia.co.kr 메일 주소만 사용 가능합니다.';
       errorEl.style.display = 'block';
       return;
@@ -261,30 +262,60 @@
     button.textContent = '확인 중...';
     button.disabled = true;
 
-    try {
-      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`);
-      const data = await res.json();
+    const callbackName = 'verifyCallback_' + Date.now();
+    let finished = false;
 
-      if (data.status === 'approved') {
-        document.getElementById('verify-step1').style.display = 'none';
-        document.getElementById('verify-success').style.display = 'block';
-      } else if (data.status === 'pending') {
-        errorEl.textContent = '신청이 접수되었습니다. 담당자 승인 후 입장 가능합니다.';
-        errorEl.style.color = '#1a7f37';
-        errorEl.style.display = 'block';
-      } else {
-        errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
-        errorEl.style.color = '#c0392b';
-        errorEl.style.display = 'block';
-      }
-    } catch (err) {
+    window[callbackName] = function (data) {
+      finished = true;
+      handleVerifyResult(data, errorEl);
+      button.textContent = '인증 신청';
+      button.disabled = false;
+      delete window[callbackName];
+      script.remove();
+    };
+
+    const script = document.createElement('script');
+    script.src = `${VERIFY_API_URL}?email=${encodeURIComponent(email)}&callback=${callbackName}`;
+    script.onerror = function () {
+      if (finished) return;
       errorEl.style.color = '#c0392b';
       errorEl.textContent = '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.';
       errorEl.style.display = 'block';
-    }
+      button.textContent = '인증 신청';
+      button.disabled = false;
+      delete window[callbackName];
+      script.remove();
+    };
+    document.body.appendChild(script);
 
-    button.textContent = '인증번호 받기';
-    button.disabled = false;
+    // 10초 내 응답 없으면 타임아웃 처리
+    setTimeout(() => {
+      if (!finished) {
+        finished = true;
+        errorEl.style.color = '#c0392b';
+        errorEl.textContent = '응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.';
+        errorEl.style.display = 'block';
+        button.textContent = '인증 신청';
+        button.disabled = false;
+        delete window[callbackName];
+        script.remove();
+      }
+    }, 10000);
+  }
+
+  function handleVerifyResult(data, errorEl) {
+    if (data.status === 'approved') {
+      document.getElementById('verify-step1').style.display = 'none';
+      document.getElementById('verify-success').style.display = 'block';
+    } else if (data.status === 'pending') {
+      errorEl.style.color = '#1a7f37';
+      errorEl.textContent = '신청이 접수되었습니다. 담당자 승인 후 입장 가능합니다.';
+      errorEl.style.display = 'block';
+    } else {
+      errorEl.style.color = '#c0392b';
+      errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
+      errorEl.style.display = 'block';
+    }
   }
 
   // support direct hash load / back-forward
