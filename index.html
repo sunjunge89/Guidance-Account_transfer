@@ -253,15 +253,6 @@
     cursor: pointer;
   }
 
-  .deco-wagle {
-    position: fixed;
-    bottom: 24px;
-    left: 40px;
-    height: 70px;
-    z-index: 5;
-    opacity: 0.95;
-  }
-
   @media (max-width: 800px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
     .hero-box p { font-size: 30px; }
@@ -272,7 +263,6 @@
     .user-badge { right: 16px; top: 16px; padding: 6px 8px 6px 12px; }
     .user-badge .user-remain { display: none; }
     .user-badge .user-email { max-width: 120px; font-size: 12px; }
-    .deco-wagle { left: 16px; bottom: 16px; height: 44px; }
   }
 </style>
 </head>
@@ -302,8 +292,6 @@
   <p class="lock-note" id="lock-note">🔒 가이드를 보려면 먼저 임직원 인증이 필요합니다.</p>
 
   <button class="verify-cta" id="verify-cta" onclick="goTo('verify')">임직원 인증</button>
-
-  <img src="wagle_deco.png" alt="" class="deco-wagle" aria-hidden="true">
 </section>
 
 <!-- SUB PAGES (coming soon) -->
