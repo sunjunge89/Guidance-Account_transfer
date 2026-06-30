@@ -237,6 +237,11 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .user-badge .user-remain {
+    color: rgba(17,17,17,0.55);
+    font-size: 12px;
+    white-space: nowrap;
+  }
   .user-badge button {
     background: var(--black);
     color: #fff;
@@ -256,6 +261,7 @@
     header { flex-wrap: wrap; gap: 12px; }
     .site-logo { left: 20px; top: 18px; height: 22px; }
     .user-badge { right: 16px; top: 16px; padding: 6px 8px 6px 12px; }
+    .user-badge .user-remain { display: none; }
     .user-badge .user-email { max-width: 120px; font-size: 12px; }
   }
 </style>
@@ -266,6 +272,7 @@
 
 <div class="user-badge" id="user-badge">
   <span class="user-email" id="user-email"></span>
+  <span class="user-remain" id="user-remain"></span>
   <button onclick="logout()">로그아웃</button>
 </div>
 
@@ -393,6 +400,18 @@
     goTo('home');
   }
 
+  function formatRemaining(session) {
+    const remainMs = VERIFIED_TTL_MS - (Date.now() - session.ts);
+    if (remainMs <= 0) return '곧 만료';
+    const totalMinutes = Math.floor(remainMs / 60000);
+    const days = Math.floor(totalMinutes / (60 * 24));
+    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+    if (days > 0) return `${days}일 ${hours}시간 남음`;
+    const minutes = totalMinutes % 60;
+    if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
+    return `${minutes}분 남음`;
+  }
+
   function updateLockUI() {
     const session = getVerifiedSession();
     const verified = !!session;
@@ -405,9 +424,11 @@
 
     const badge = document.getElementById('user-badge');
     const emailEl = document.getElementById('user-email');
+    const remainEl = document.getElementById('user-remain');
     if (badge && emailEl) {
       if (verified) {
         emailEl.textContent = session.email;
+        if (remainEl) remainEl.textContent = formatRemaining(session);
         badge.style.display = 'flex';
       } else {
         badge.style.display = 'none';
@@ -535,6 +556,7 @@
   // support direct hash load / back-forward
   window.addEventListener('DOMContentLoaded', () => {
     updateLockUI();
+    setInterval(updateLockUI, 60 * 1000); // 1분마다 남은 시간 갱신
     const hash = window.location.hash.replace('#', '');
     if (hash && document.getElementById(hash)) {
       goTo(hash);
