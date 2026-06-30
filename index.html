@@ -216,6 +216,38 @@
     z-index: 20;
   }
 
+  .user-badge {
+    position: fixed;
+    top: 22px;
+    right: 40px;
+    z-index: 20;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.85);
+    border: 2px solid var(--black);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    font-size: 13px;
+  }
+  .user-badge .user-email {
+    font-weight: 600;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .user-badge button {
+    background: var(--black);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
   @media (max-width: 800px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
     .hero-box p { font-size: 30px; }
@@ -223,12 +255,19 @@
     .title-block { margin: 40px 0 50px; }
     header { flex-wrap: wrap; gap: 12px; }
     .site-logo { left: 20px; top: 18px; height: 22px; }
+    .user-badge { right: 16px; top: 16px; padding: 6px 8px 6px 12px; }
+    .user-badge .user-email { max-width: 120px; font-size: 12px; }
   }
 </style>
 </head>
 <body>
 
 <img src="kt_nasmedia.png" alt="KT nasmedia" class="site-logo">
+
+<div class="user-badge" id="user-badge">
+  <span class="user-email" id="user-email"></span>
+  <button onclick="logout()">로그아웃</button>
+</div>
 
 <!-- HOME -->
 <section class="page active" id="home">
@@ -318,24 +357,62 @@
   }
 
   // ---- 인증 상태 확인 / 박스 잠금 처리 ----
-  const VERIFIED_KEY = 'nasmedia_verified_email';
+  // localStorage에 이메일 + 인증 시각을 저장해서, 7일간 재인증 없이 유지되도록 함
+  const VERIFIED_KEY = 'nasmedia_verified_session';
+  const VERIFIED_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7일
+
+  function getVerifiedSession() {
+    const raw = localStorage.getItem(VERIFIED_KEY);
+    if (!raw) return null;
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed.email || !parsed.ts) return null;
+      if (Date.now() - parsed.ts > VERIFIED_TTL_MS) {
+        localStorage.removeItem(VERIFIED_KEY);
+        return null;
+      }
+      return parsed;
+    } catch (e) {
+      localStorage.removeItem(VERIFIED_KEY);
+      return null;
+    }
+  }
 
   function isVerified() {
-    return !!localStorage.getItem(VERIFIED_KEY);
+    return !!getVerifiedSession();
   }
 
   function setVerified(email) {
-    localStorage.setItem(VERIFIED_KEY, email);
+    localStorage.setItem(VERIFIED_KEY, JSON.stringify({ email: email, ts: Date.now() }));
     updateLockUI();
   }
 
+  function logout() {
+    localStorage.removeItem(VERIFIED_KEY);
+    updateLockUI();
+    goTo('home');
+  }
+
   function updateLockUI() {
-    const verified = isVerified();
+    const session = getVerifiedSession();
+    const verified = !!session;
+
     document.querySelectorAll('#box-grid .box').forEach(btn => {
       btn.classList.toggle('locked', !verified);
     });
     const note = document.getElementById('lock-note');
     if (note) note.style.display = verified ? 'none' : 'block';
+
+    const badge = document.getElementById('user-badge');
+    const emailEl = document.getElementById('user-email');
+    if (badge && emailEl) {
+      if (verified) {
+        emailEl.textContent = session.email;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
   }
 
   function goToGuide(id, btn) {
