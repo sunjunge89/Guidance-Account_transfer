@@ -560,11 +560,33 @@
   window.addEventListener('DOMContentLoaded', () => {
     updateLockUI();
     setInterval(updateLockUI, 60 * 1000); // 1분마다 남은 시간 갱신
+
+    revalidateWithServer(); // 페이지 진입 시 서버 승인 상태 재확인
+    setInterval(revalidateWithServer, 5 * 60 * 1000); // 5분마다 서버 승인 상태 재확인 (승인 취소 즉시 반영)
+
     const hash = window.location.hash.replace('#', '');
     if (hash && document.getElementById(hash)) {
       goTo(hash);
     }
   });
+
+  // 로컬에 인증 캐시가 남아있어도, 서버(시트)에서 승인이 취소됐으면 즉시 로그아웃 처리
+  async function revalidateWithServer() {
+    const session = getVerifiedSession();
+    if (!session) return;
+
+    const result = await callVerifyApi(session.email);
+    if (result.ok && result.data.status !== 'approved') {
+      localStorage.removeItem(VERIFIED_KEY);
+      updateLockUI();
+      // 가이드 페이지를 보고 있었다면 메인으로 돌려보냄
+      const activePage = document.querySelector('.page.active');
+      if (activePage && activePage.id !== 'home' && activePage.id !== 'verify') {
+        goTo('home');
+      }
+    }
+    // 네트워크 오류 등으로 result.ok가 false인 경우는 무시 (일시적 오류로 로그아웃시키지 않음)
+  }
 </script>
 
 </body>
