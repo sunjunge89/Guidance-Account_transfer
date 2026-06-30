@@ -14,9 +14,28 @@ export default async function handler(req, res) {
       redirect: 'follow'
     });
 
-    const data = await response.json();
+    const rawText = await response.text();
+
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseErr) {
+      // 구글이 JSON이 아닌 응답(에러 페이지 등)을 준 경우, 디버깅을 위해 그대로 노출
+      res.status(502).json({
+        status: 'error',
+        message: 'apps script returned non-json response',
+        upstream_status: response.status,
+        upstream_body_preview: rawText.slice(0, 300)
+      });
+      return;
+    }
+
     res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ status: 'error', message: 'failed to reach verification server' });
+    res.status(500).json({
+      status: 'error',
+      message: 'failed to reach verification server',
+      error_detail: String(err)
+    });
   }
 }
