@@ -267,7 +267,7 @@
       const data = await res.json();
       if (data.status === 'error') {
         errorEl.style.color = '#c0392b';
-        errorEl.textContent = '서버 오류: ' + (data.message || '알 수 없는 오류');
+        errorEl.textContent = '서버 오류: ' + (data.message || '알 수 없는 오류') + (data.error_detail ? ' / ' + data.error_detail : '') + (data.upstream_body_preview ? ' / ' + data.upstream_body_preview : '');
         errorEl.style.display = 'block';
       } else {
         handleVerifyResult(data, errorEl);
