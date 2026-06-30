@@ -243,8 +243,8 @@
     history.replaceState(null, '', '#' + id);
   }
 
-  // ---- 임직원 인증 (구글 시트 연동, fetch 방식) ----
-  const VERIFY_API_URL = 'https://script.google.com/macros/s/AKfycbwfDR10iH-wnl_jy2KWL-oTeTlULNzlffziXt-ipBVXS9hpvstKUtPa4Z8lLRyfhK_d6g/exec';
+  // ---- 임직원 인증 (Vercel 서버리스 함수 경유, CORS 문제 없음) ----
+  const VERIFY_API_URL = '/api/verify';
 
   async function sendCode() {
     const email = document.getElementById('verify-email').value.trim();
@@ -263,10 +263,7 @@
     button.disabled = true;
 
     try {
-      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`, {
-        method: 'GET',
-        redirect: 'follow'
-      });
+      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`);
       const data = await res.json();
       handleVerifyResult(data, errorEl);
     } catch (err) {
