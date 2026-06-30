@@ -226,6 +226,13 @@
       <p id="verify-error" style="font-size:14px; margin-top:10px; display:none;"></p>
     </div>
 
+    <div id="verify-pending" style="width:100%; max-width:380px; display:none;">
+      <p style="font-size:24px; margin:0 0 8px;">⏳ 승인 대기중</p>
+      <span id="verify-pending-email" style="display:block; margin-bottom:18px; word-break:break-all;"></span>
+      <button class="back" style="width:100%; margin-top:0;" onclick="checkStatus()">상태 확인하기</button>
+      <p id="verify-pending-error" style="font-size:14px; margin-top:10px; display:none;"></p>
+    </div>
+
     <div id="verify-success" style="display:none;">
       <p style="font-size:28px;">✅ 인증 완료</p>
       <span>임직원 인증이 완료되었습니다. 가이드를 이용하실 수 있습니다.</span>
@@ -245,6 +252,7 @@
 
   // ---- 임직원 인증 (Vercel 서버리스 함수 경유, CORS 문제 없음) ----
   const VERIFY_API_URL = '/api/verify';
+  let submittedEmail = '';
 
   async function sendCode() {
     const email = document.getElementById('verify-email').value.trim();
@@ -262,19 +270,22 @@
     button.textContent = '확인 중...';
     button.disabled = true;
 
-    try {
-      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`);
-      const data = await res.json();
-      if (data.status === 'error') {
-        errorEl.style.color = '#c0392b';
-        errorEl.textContent = '서버 오류: ' + (data.message || '알 수 없는 오류') + (data.error_detail ? ' / ' + data.error_detail : '') + (data.upstream_body_preview ? ' / ' + data.upstream_body_preview : '');
-        errorEl.style.display = 'block';
+    submittedEmail = email;
+    const result = await callVerifyApi(email);
+
+    if (result.ok) {
+      if (result.data.status === 'approved') {
+        showApproved();
+      } else if (result.data.status === 'pending') {
+        showPending(email);
       } else {
-        handleVerifyResult(data, errorEl);
+        errorEl.style.color = '#c0392b';
+        errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
+        errorEl.style.display = 'block';
       }
-    } catch (err) {
+    } else {
       errorEl.style.color = '#c0392b';
-      errorEl.textContent = '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.';
+      errorEl.textContent = result.message;
       errorEl.style.display = 'block';
     }
 
@@ -282,19 +293,64 @@
     button.disabled = false;
   }
 
-  function handleVerifyResult(data, errorEl) {
-    if (data.status === 'approved') {
-      document.getElementById('verify-step1').style.display = 'none';
-      document.getElementById('verify-success').style.display = 'block';
-    } else if (data.status === 'pending') {
-      errorEl.style.color = '#1a7f37';
-      errorEl.textContent = '신청이 접수되었습니다. 담당자 승인 후 입장 가능합니다.';
-      errorEl.style.display = 'block';
+  async function checkStatus() {
+    const button = document.querySelector('#verify-pending button.back');
+    const errorEl = document.getElementById('verify-pending-error');
+    errorEl.style.display = 'none';
+    button.textContent = '확인 중...';
+    button.disabled = true;
+
+    const result = await callVerifyApi(submittedEmail);
+
+    if (result.ok) {
+      if (result.data.status === 'approved') {
+        showApproved();
+      } else if (result.data.status === 'pending') {
+        errorEl.style.color = '#1a7f37';
+        errorEl.textContent = '아직 승인 대기중입니다. 담당자 승인 후 다시 확인해주세요.';
+        errorEl.style.display = 'block';
+      } else {
+        errorEl.style.color = '#c0392b';
+        errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
+        errorEl.style.display = 'block';
+      }
     } else {
       errorEl.style.color = '#c0392b';
-      errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
+      errorEl.textContent = result.message;
       errorEl.style.display = 'block';
     }
+
+    button.textContent = '상태 확인하기';
+    button.disabled = false;
+  }
+
+  async function callVerifyApi(email) {
+    try {
+      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      if (data.status === 'error') {
+        return {
+          ok: false,
+          message: '서버 오류: ' + (data.message || '알 수 없는 오류') + (data.error_detail ? ' / ' + data.error_detail : '') + (data.upstream_body_preview ? ' / ' + data.upstream_body_preview : '')
+        };
+      }
+      return { ok: true, data };
+    } catch (err) {
+      return { ok: false, message: '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.' };
+    }
+  }
+
+  function showPending(email) {
+    document.getElementById('verify-step1').style.display = 'none';
+    document.getElementById('verify-success').style.display = 'none';
+    document.getElementById('verify-pending').style.display = 'block';
+    document.getElementById('verify-pending-email').textContent = email;
+  }
+
+  function showApproved() {
+    document.getElementById('verify-step1').style.display = 'none';
+    document.getElementById('verify-pending').style.display = 'none';
+    document.getElementById('verify-success').style.display = 'block';
   }
 
   // support direct hash load / back-forward
