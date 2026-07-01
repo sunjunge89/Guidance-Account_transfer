@@ -69,7 +69,7 @@
   .grid button.box {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     width: 100%;
     border: none;
@@ -77,8 +77,8 @@
     height: 200px;
     cursor: pointer;
     font-family: 'Pretendard', -apple-system, sans-serif;
-    padding: 28px 22px;
-    text-align: center;
+    padding: 26px 24px;
+    text-align: left;
     transition: transform 0.18s ease, box-shadow 0.18s ease;
     box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   }
@@ -107,43 +107,28 @@
   }
   .grid button.box.shake { animation: shake 0.5s ease; }
 
+  .box-step {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: rgba(0,0,0,0.28);
+  }
   .box-title {
     display: block;
     font-size: 22px;
     font-weight: 800;
     color: var(--black);
-    line-height: 1.3;
-    letter-spacing: -0.3px;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
   }
-  /* 노란 박스 예외 제거 - 모든 타이틀 검정 통일 */
-
-  .box-flow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 7px;
-    width: 100%;
-  }
-  .flow-tag {
-    background: rgba(255,255,255,0.45);
-    border-radius: 10px;
-    padding: 8px 14px;
+  .box-desc {
+    display: block;
     font-size: 12px;
-    font-weight: 600;
-    color: var(--black);
-    width: 100%;
-    white-space: nowrap;
+    font-weight: 500;
+    color: rgba(0,0,0,0.45);
+    line-height: 1.5;
   }
-  .flow-tag.accent {
-    background: rgba(0,0,0,0.15);
-    color: var(--black);
-  }
-  .flow-arrow {
-    font-size: 11px;
-    color: rgba(0,0,0,0.35);
-  }
-
-  .box-single { justify-content: center; }
+  .box-single { justify-content: space-between; }
 
   .lock-note {
     display: inline-flex;
@@ -345,31 +330,24 @@
 
   <div class="grid" id="box-grid">
     <button class="box box-1 box-single" onclick="goToGuide('box1', this)">
+      <span class="box-step">01</span>
       <span class="box-title">계정 맵핑</span>
+      <span class="box-desc">이관 대상 계정 구조 파악 및 정리</span>
     </button>
     <button class="box box-2" onclick="goToGuide('box2', this)">
+      <span class="box-step">02</span>
       <span class="box-title">직광고주 이관</span>
-      <span class="box-flow">
-        <span class="flow-tag">광고주 직접결제</span>
-        <span class="flow-arrow">▼</span>
-        <span class="flow-tag accent">나스 인보이스 결제</span>
-      </span>
+      <span class="box-desc">광고주 직접결제 → 나스 인보이스 전환</span>
     </button>
     <button class="box box-3" onclick="goToGuide('box3', this)">
+      <span class="box-step">03</span>
       <span class="box-title">대행사&amp;렙 이관</span>
-      <span class="box-flow">
-        <span class="flow-tag">타사 인보이스 결제</span>
-        <span class="flow-arrow">▼</span>
-        <span class="flow-tag accent">나스 인보이스 결제</span>
-      </span>
+      <span class="box-desc">타사 인보이스 → 나스 인보이스 전환</span>
     </button>
     <button class="box box-4" onclick="goToGuide('box4', this)">
+      <span class="box-step">04</span>
       <span class="box-title">피이관</span>
-      <span class="box-flow">
-        <span class="flow-tag">나스 인보이스 결제</span>
-        <span class="flow-arrow">▼</span>
-        <span class="flow-tag accent">타사 인보이스 결제</span>
-      </span>
+      <span class="box-desc">나스 인보이스 → 광고주/대행사 직접결제 전환</span>
     </button>
   </div>
   <p class="lock-note" id="lock-note">🔒 가이드를 보려면 먼저 임직원 인증이 필요합니다.</p>
