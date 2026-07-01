@@ -175,6 +175,56 @@
   }
   .verify-cta:hover { transform: translateY(-2px); }
 
+  .inline-verify {
+    display: none;
+    margin-top: 20px;
+    animation: fadeIn 0.25s ease;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .inline-verify input[type="email"] {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid rgba(0,0,0,0.15);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    background: #fff;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .inline-verify input[type="email"]:focus {
+    border-color: #4285F4;
+  }
+  .inline-submit {
+    width: 100%;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .inline-submit:hover { opacity: 0.85; }
+  .inline-msg {
+    font-size: 13px;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+  .inline-success-icon { font-size: 20px; margin-right: 6px; }
+  #inline-success {
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 12px;
+    color: #1a7f37;
+  }
+
   /* ── 서브 페이지 ── */
   .sub-hero {
     background: var(--white);
@@ -330,7 +380,17 @@
   </div>
   <p class="lock-note" id="lock-note">🔒 가이드를 보려면 먼저 임직원 인증이 필요합니다.</p>
 
-  <button class="verify-cta" id="verify-cta" onclick="goTo('verify')">임직원 인증</button>
+  <button class="verify-cta" id="verify-cta" onclick="toggleInlineVerify()">임직원 인증</button>
+
+  <div class="inline-verify" id="inline-verify">
+    <input type="email" id="inline-email" placeholder="xxxx@nasmedia.co.kr" autocomplete="email">
+    <button class="inline-submit" id="inline-submit" onclick="sendCode()">신청하기</button>
+    <p class="inline-msg" id="inline-msg"></p>
+    <div id="inline-success" style="display:none;">
+      <span class="inline-success-icon">✅</span>
+      <span>임직원 인증이 완료되었습니다.</span>
+    </div>
+  </div>
 </section>
 
 <!-- SUB PAGES (coming soon) -->
@@ -491,78 +551,85 @@
     goTo(id);
   }
 
-  // ---- 임직원 인증 (Vercel 서버리스 함수 경유, CORS 문제 없음) ----
+  // ---- 임직원 인증 (인라인 방식) ----
   const VERIFY_API_URL = '/api/verify';
   let submittedEmail = '';
 
+  function toggleInlineVerify() {
+    const form = document.getElementById('inline-verify');
+    const isVisible = form.style.display === 'block';
+    form.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+      document.getElementById('inline-email').focus();
+    }
+  }
+
   async function sendCode() {
-    const email = document.getElementById('verify-email').value.trim();
-    const errorEl = document.getElementById('verify-error');
-    const button = document.querySelector('#verify-step1 button.back');
+    const email = document.getElementById('inline-email').value.trim();
+    const msgEl = document.getElementById('inline-msg');
+    const btn = document.getElementById('inline-submit');
 
     const isValid = /^[a-zA-Z0-9._%+-]+@nasmedia\.co\.kr$/i.test(email);
     if (!isValid) {
-      errorEl.style.color = '#c0392b';
-      errorEl.textContent = '@nasmedia.co.kr 메일 주소만 사용 가능합니다.';
-      errorEl.style.display = 'block';
+      msgEl.style.color = '#c0392b';
+      msgEl.textContent = '@nasmedia.co.kr 메일 주소만 사용 가능합니다.';
       return;
     }
-    errorEl.style.display = 'none';
-    button.textContent = '확인 중...';
-    button.disabled = true;
 
+    msgEl.textContent = '';
+    btn.textContent = '확인 중...';
+    btn.disabled = true;
     submittedEmail = email;
+
     const result = await callVerifyApi(email);
 
     if (result.ok) {
       if (result.data.status === 'approved') {
         showApproved();
       } else if (result.data.status === 'pending') {
-        showPending(email);
+        // 대기 중 → 상태 확인 버튼으로 전환
+        btn.textContent = '상태 확인하기';
+        btn.disabled = false;
+        btn.onclick = checkStatus;
+        msgEl.style.color = '#1a7f37';
+        msgEl.textContent = '신청이 접수되었습니다. 담당자 승인 후 아래 버튼으로 확인해주세요.';
       } else {
-        errorEl.style.color = '#c0392b';
-        errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
-        errorEl.style.display = 'block';
+        msgEl.style.color = '#c0392b';
+        msgEl.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+        btn.textContent = '신청하기';
+        btn.disabled = false;
       }
     } else {
-      errorEl.style.color = '#c0392b';
-      errorEl.textContent = result.message;
-      errorEl.style.display = 'block';
+      msgEl.style.color = '#c0392b';
+      msgEl.textContent = result.message;
+      btn.textContent = '신청하기';
+      btn.disabled = false;
     }
-
-    button.textContent = '인증 신청';
-    button.disabled = false;
   }
 
   async function checkStatus() {
-    const button = document.querySelector('#verify-pending button.back');
-    const errorEl = document.getElementById('verify-pending-error');
-    errorEl.style.display = 'none';
-    button.textContent = '확인 중...';
-    button.disabled = true;
+    const msgEl = document.getElementById('inline-msg');
+    const btn = document.getElementById('inline-submit');
+    btn.textContent = '확인 중...';
+    btn.disabled = true;
 
     const result = await callVerifyApi(submittedEmail);
 
     if (result.ok) {
       if (result.data.status === 'approved') {
         showApproved();
-      } else if (result.data.status === 'pending') {
-        errorEl.style.color = '#1a7f37';
-        errorEl.textContent = '아직 승인 대기중입니다. 담당자 승인 후 다시 확인해주세요.';
-        errorEl.style.display = 'block';
       } else {
-        errorEl.style.color = '#c0392b';
-        errorEl.textContent = '확인 중 오류가 발생했습니다. 다시 시도해주세요.';
-        errorEl.style.display = 'block';
+        msgEl.style.color = '#1a7f37';
+        msgEl.textContent = '아직 대기중입니다. 잠시 후 다시 확인해주세요.';
+        btn.textContent = '상태 확인하기';
+        btn.disabled = false;
       }
     } else {
-      errorEl.style.color = '#c0392b';
-      errorEl.textContent = result.message;
-      errorEl.style.display = 'block';
+      msgEl.style.color = '#c0392b';
+      msgEl.textContent = result.message;
+      btn.textContent = '상태 확인하기';
+      btn.disabled = false;
     }
-
-    button.textContent = '상태 확인하기';
-    button.disabled = false;
   }
 
   async function callVerifyApi(email) {
@@ -570,10 +637,7 @@
       const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`);
       const data = await res.json();
       if (data.status === 'error') {
-        return {
-          ok: false,
-          message: '서버 오류: ' + (data.message || '알 수 없는 오류') + (data.error_detail ? ' / ' + data.error_detail : '') + (data.upstream_body_preview ? ' / ' + data.upstream_body_preview : '')
-        };
+        return { ok: false, message: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' };
       }
       return { ok: true, data };
     } catch (err) {
@@ -581,17 +645,11 @@
     }
   }
 
-  function showPending(email) {
-    document.getElementById('verify-step1').style.display = 'none';
-    document.getElementById('verify-success').style.display = 'none';
-    document.getElementById('verify-pending').style.display = 'block';
-    document.getElementById('verify-pending-email').textContent = email;
-  }
-
   function showApproved() {
-    document.getElementById('verify-step1').style.display = 'none';
-    document.getElementById('verify-pending').style.display = 'none';
-    document.getElementById('verify-success').style.display = 'block';
+    document.getElementById('inline-email').style.display = 'none';
+    document.getElementById('inline-submit').style.display = 'none';
+    document.getElementById('inline-msg').textContent = '';
+    document.getElementById('inline-success').style.display = 'block';
     setVerified(submittedEmail);
   }
 
