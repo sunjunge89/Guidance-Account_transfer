@@ -7,58 +7,27 @@
 <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/google-sans" />
 <style>
   :root {
-    --yellow: #FBB417;
+    --bg: #F1F3F4;
     --black: #111111;
     --white: #ffffff;
+    --g-blue:   #4285F4;
+    --g-red:    #EA4335;
+    --g-yellow: #FBBC05;
+    --g-green:  #34A853;
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0;
-    background: var(--yellow);
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
     color: var(--black);
     min-height: 100vh;
   }
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 24px 40px;
-    position: relative;
-    z-index: 10;
-  }
-  .nav-left, .nav-right {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .pill {
-    background: #fff8e8;
-    border: none;
-    border-radius: 999px;
-    padding: 8px 18px;
-    font-family: inherit;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .pill.dark {
-    background: var(--black);
-    color: #fff;
-  }
-  .logo {
-    font-family: inherit;
-    font-weight: 800;
-    font-size: 28px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    color: var(--black);
-  }
 
-  /* page sections */
+  /* ── 페이지 공통 ── */
   .page {
     display: none;
-    max-width: 1100px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 80px 40px 100px;
     text-align: center;
@@ -66,6 +35,127 @@
   }
   .page.active { display: block; }
 
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── 메인 타이틀 ── */
+  .title-block { margin: 60px 0 60px; }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(17,17,17,0.4);
+    margin: 0 0 12px;
+  }
+  .main-title {
+    font-family: 'Google Sans', 'Pretendard', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--black);
+  }
+
+  /* ── 박스 그리드 ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .grid button.box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: none;
+    border-radius: 20px;
+    height: 200px;
+    cursor: pointer;
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    padding: 28px 22px;
+    text-align: center;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  }
+  .box-1 { background: var(--g-blue); }
+  .box-2 { background: var(--g-red); }
+  .box-3 { background: var(--g-yellow); }
+  .box-4 { background: var(--g-green); }
+
+  .grid button.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+  }
+  .grid button.box.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .grid button.box.locked:hover {
+    transform: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  }
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-8px); }
+    40%, 60% { transform: translateX(8px); }
+  }
+  .grid button.box.shake { animation: shake 0.5s ease; }
+
+  .box-title {
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  }
+  /* 노란 박스는 흰 텍스트가 안 보이므로 어둡게 */
+  .box-3 .box-title,
+  .box-3 .flow-tag,
+  .box-3 .flow-arrow { color: rgba(0,0,0,0.75); }
+
+  .box-flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+  }
+  .flow-tag {
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    width: 100%;
+    white-space: nowrap;
+  }
+  .flow-tag.accent {
+    background: rgba(0,0,0,0.18);
+    color: #fff;
+  }
+  .flow-arrow {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .box-single { justify-content: flex-start; }
+
+  .lock-note {
+    font-size: 14px;
+    color: rgba(17,17,17,0.5);
+    margin: 14px 0 0;
+  }
+
+  /* ── 임직원 인증 버튼 ── */
   .verify-cta {
     display: inline-block;
     margin-top: 36px;
@@ -80,102 +170,11 @@
     cursor: pointer;
     transition: transform 0.15s ease;
   }
-  .verify-cta:hover {
-    transform: translateY(-2px);
-  }
+  .verify-cta:hover { transform: translateY(-2px); }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  h1 {
-    font-size: 32px;
-    line-height: 1.3;
-    margin-bottom: 50px;
-  }
-  .title-block {
-    margin: 60px 0 70px;
-  }
-  .eyebrow {
-    font-family: 'Google Sans', 'Pretendard', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(17,17,17,0.55);
-    margin: 0 0 14px;
-  }
-  .main-title {
-    font-family: 'Google Sans', 'Pretendard', sans-serif;
-    font-weight: 700;
-    font-size: 68px;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin: 0;
-  }
-  .hero-box {
-    background: var(--white);
-    border: 3px solid var(--black);
-    border-radius: 28px;
-    min-height: 380px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 30px;
-    margin-bottom: 30px;
-  }
-  .hero-box p {
-    font-size: 44px;
-    line-height: 1.5;
-    margin: 0;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-  .grid button.box {
-    display: block;
-    width: 100%;
-    background: var(--white);
-    border: 3px solid var(--black);
-    border-radius: 18px;
-    height: 130px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 16px;
-    transition: transform 0.15s ease;
-  }
-  .grid button.box:hover {
-    transform: translateY(-4px);
-  }
-  .grid button.box.locked {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-  .grid button.box.locked:hover {
-    transform: none;
-  }
-  @keyframes shake {
-    10%, 90% { transform: translateX(-2px); }
-    20%, 80% { transform: translateX(4px); }
-    30%, 50%, 70% { transform: translateX(-8px); }
-    40%, 60% { transform: translateX(8px); }
-  }
-  .grid button.box.shake {
-    animation: shake 0.5s ease;
-  }
-  .lock-note {
-    font-size: 14px;
-    color: rgba(17,17,17,0.6);
-    margin: 14px 0 0;
-  }
-
-  /* sub pages (coming soon) */
+  /* ── 서브 페이지 ── */
   .sub-hero {
     background: var(--white);
-    border: 3px solid var(--black);
     border-radius: 28px;
     min-height: 420px;
     display: flex;
@@ -183,6 +182,7 @@
     align-items: center;
     justify-content: center;
     padding: 60px 30px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
   }
   .sub-hero p {
     font-size: 48px;
@@ -190,17 +190,14 @@
     margin: 0 0 24px;
     font-weight: bold;
   }
-  .sub-hero span {
-    font-size: 18px;
-    color: #555;
-  }
+  .sub-hero span { font-size: 18px; color: #555; }
   .back {
     display: inline-block;
     margin-top: 30px;
     text-decoration: none;
     color: var(--black);
     background: var(--white);
-    border: 3px solid var(--black);
+    border: 2px solid var(--black);
     border-radius: 999px;
     padding: 10px 24px;
     font-family: inherit;
@@ -208,6 +205,7 @@
     cursor: pointer;
   }
 
+  /* ── 고정 요소 ── */
   .site-logo {
     position: fixed;
     top: 24px;
@@ -215,7 +213,6 @@
     height: 28px;
     z-index: 20;
   }
-
   .user-badge {
     position: fixed;
     top: 22px;
@@ -224,11 +221,12 @@
     display: none;
     align-items: center;
     gap: 10px;
-    background: rgba(255,255,255,0.85);
-    border: 2px solid var(--black);
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid rgba(0,0,0,0.12);
     border-radius: 999px;
     padding: 8px 10px 8px 16px;
     font-size: 13px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   }
   .user-badge .user-email {
     font-weight: 600;
@@ -238,7 +236,7 @@
     white-space: nowrap;
   }
   .user-badge .user-remain {
-    color: rgba(17,17,17,0.55);
+    color: rgba(17,17,17,0.5);
     font-size: 12px;
     white-space: nowrap;
   }
@@ -253,12 +251,27 @@
     cursor: pointer;
   }
 
+  /* ── 임직원 인증 페이지 ── */
+  .sub-hero input[type="email"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid rgba(0,0,0,0.2);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    margin-bottom: 14px;
+    outline: none;
+    background: #fafafa;
+  }
+  .sub-hero input[type="email"]:focus {
+    border-color: var(--g-blue);
+  }
+
+  /* ── 반응형 ── */
   @media (max-width: 800px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
-    .hero-box p { font-size: 30px; }
     .main-title { font-size: 40px; }
-    .title-block { margin: 40px 0 50px; }
-    header { flex-wrap: wrap; gap: 12px; }
+    .title-block { margin: 40px 0 40px; }
     .site-logo { left: 20px; top: 18px; height: 22px; }
     .user-badge { right: 16px; top: 16px; padding: 6px 8px 6px 12px; }
     .user-badge .user-remain { display: none; }
@@ -284,10 +297,33 @@
   </div>
 
   <div class="grid" id="box-grid">
-    <button class="box" onclick="goToGuide('box1', this)"></button>
-    <button class="box" onclick="goToGuide('box2', this)"></button>
-    <button class="box" onclick="goToGuide('box3', this)"></button>
-    <button class="box" onclick="goToGuide('box4', this)"></button>
+    <button class="box box-1 box-single" onclick="goToGuide('box1', this)">
+      <span class="box-title">계정 맵핑</span>
+    </button>
+    <button class="box box-2" onclick="goToGuide('box2', this)">
+      <span class="box-title">직광고주 이관</span>
+      <span class="box-flow">
+        <span class="flow-tag">광고주 직접결제</span>
+        <span class="flow-arrow">▼</span>
+        <span class="flow-tag accent">나스 인보이스 결제</span>
+      </span>
+    </button>
+    <button class="box box-3" onclick="goToGuide('box3', this)">
+      <span class="box-title">대행사&amp;렙 이관</span>
+      <span class="box-flow">
+        <span class="flow-tag">타사 인보이스 결제</span>
+        <span class="flow-arrow">▼</span>
+        <span class="flow-tag accent">나스 인보이스 결제</span>
+      </span>
+    </button>
+    <button class="box box-4" onclick="goToGuide('box4', this)">
+      <span class="box-title">피이관</span>
+      <span class="box-flow">
+        <span class="flow-tag">나스 인보이스 결제</span>
+        <span class="flow-arrow">▼</span>
+        <span class="flow-tag accent">타사 인보이스 결제</span>
+      </span>
+    </button>
   </div>
   <p class="lock-note" id="lock-note">🔒 가이드를 보려면 먼저 임직원 인증이 필요합니다.</p>
 
