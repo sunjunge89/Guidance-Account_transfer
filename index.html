@@ -283,22 +283,6 @@
     cursor: pointer;
   }
 
-  /* ── 임직원 인증 페이지 ── */
-  .sub-hero input[type="email"] {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1.5px solid rgba(0,0,0,0.2);
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 15px;
-    margin-bottom: 14px;
-    outline: none;
-    background: #fafafa;
-  }
-  .sub-hero input[type="email"]:focus {
-    border-color: var(--g-blue);
-  }
-
   /* ── 반응형 ── */
   @media (max-width: 800px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
@@ -325,7 +309,7 @@
 <section class="page active" id="home">
   <div class="title-block">
     <p class="eyebrow">Guidance</p>
-    <h1 class="main-title">Google Account<br>transfer</h1>
+    <h1 class="main-title">Google Ads<br>Account Transfer</h1>
   </div>
 
   <div class="grid" id="box-grid">
@@ -393,33 +377,6 @@
   <div class="sub-hero">
     <p>Coming Soon</p>
     <span>준비 중인 페이지입니다. (4)</span>
-  </div>
-  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
-</section>
-
-<section class="page" id="verify">
-  <div class="sub-hero" style="min-height:auto; padding:50px 30px;">
-    <p style="font-size:32px;">임직원 인증</p>
-    <span style="margin-bottom:20px;">나스미디어 임직원만 입장 가능합니다. (@nasmedia.co.kr)</span>
-
-    <div id="verify-step1" style="width:100%; max-width:380px;">
-      <input type="email" id="verify-email" placeholder="xxxx@nasmedia.co.kr"
-        style="width:100%; padding:14px 16px; border:2px solid var(--black); border-radius:12px; font-family:inherit; font-size:15px; margin-bottom:14px;">
-      <button class="back" style="width:100%; margin-top:0;" onclick="sendCode()">인증 신청</button>
-      <p id="verify-error" style="font-size:14px; margin-top:10px; display:none;"></p>
-    </div>
-
-    <div id="verify-pending" style="width:100%; max-width:380px; display:none;">
-      <p style="font-size:24px; margin:0 0 8px;">⏳ 승인 대기중</p>
-      <span id="verify-pending-email" style="display:block; margin-bottom:18px; word-break:break-all;"></span>
-      <button class="back" style="width:100%; margin-top:0;" onclick="checkStatus()">상태 확인하기</button>
-      <p id="verify-pending-error" style="font-size:14px; margin-top:10px; display:none;"></p>
-    </div>
-
-    <div id="verify-success" style="display:none;">
-      <p style="font-size:28px;">✅ 인증 완료</p>
-      <span>임직원 인증이 완료되었습니다. 가이드를 이용하실 수 있습니다.</span>
-    </div>
   </div>
   <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
 </section>
