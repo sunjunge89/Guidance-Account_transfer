@@ -216,13 +216,7 @@
     font-size: 13px;
     margin-top: 10px;
     min-height: 18px;
-  }
-  .inline-success-icon { font-size: 20px; margin-right: 6px; }
-  #inline-success {
-    font-size: 15px;
-    font-weight: 600;
-    margin-top: 12px;
-    color: #1a7f37;
+    color: rgba(17,17,17,0.6);
   }
 
   /* ── 서브 페이지 ── */
@@ -387,8 +381,7 @@
     <button class="inline-submit" id="inline-submit" onclick="sendCode()">신청하기</button>
     <p class="inline-msg" id="inline-msg"></p>
     <div id="inline-success" style="display:none;">
-      <span class="inline-success-icon">✅</span>
-      <span>임직원 인증이 완료되었습니다.</span>
+      <p class="lock-note" style="color: rgba(17,17,17,0.7);">🖤 임직원 인증이 완료되었습니다.</p>
     </div>
   </div>
 </section>
@@ -591,7 +584,7 @@
         btn.textContent = '상태 확인하기';
         btn.disabled = false;
         btn.onclick = checkStatus;
-        msgEl.style.color = '#1a7f37';
+        msgEl.style.color = 'rgba(17,17,17,0.65)';
         msgEl.textContent = '신청이 접수되었습니다. 담당자 승인 후 아래 버튼으로 확인해주세요.';
       } else {
         msgEl.style.color = '#c0392b';
@@ -619,7 +612,7 @@
       if (result.data.status === 'approved') {
         showApproved();
       } else {
-        msgEl.style.color = '#1a7f37';
+        msgEl.style.color = 'rgba(17,17,17,0.65)';
         msgEl.textContent = '아직 대기중입니다. 잠시 후 다시 확인해주세요.';
         btn.textContent = '상태 확인하기';
         btn.disabled = false;
