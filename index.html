@@ -36,7 +36,7 @@
   .page.active { display: block; }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
+    from { opacity: 0; transform: translateY(2px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
@@ -100,12 +100,10 @@
     box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   }
   @keyframes shake {
-    10%, 90% { transform: translateX(-2px); }
-    20%, 80% { transform: translateX(4px); }
-    30%, 50%, 70% { transform: translateX(-8px); }
-    40%, 60% { transform: translateX(8px); }
+    20%, 80% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
   }
-  .grid button.box.shake { animation: shake 0.5s ease; }
+  .grid button.box.shake { animation: shake 0.4s ease; }
 
   .box-step {
     font-size: 11px;
@@ -342,10 +340,9 @@
     <input type="email" id="inline-email" placeholder="xxxx@nasmedia.co.kr" autocomplete="email">
     <button class="inline-submit" id="inline-submit" onclick="sendCode()">신청하기</button>
     <p class="inline-msg" id="inline-msg"></p>
-    <div id="inline-success" style="display:none;">
-      <p class="lock-note" style="color: rgba(17,17,17,0.7);">🖤 임직원 인증이 완료되었습니다.</p>
-    </div>
   </div>
+
+  <p class="lock-note" id="inline-success" style="display:none;">🖤 임직원 인증이 완료되었습니다.</p>
 </section>
 
 <!-- SUB PAGES (coming soon) -->
@@ -451,6 +448,9 @@
 
     const verifyCta = document.getElementById('verify-cta');
     if (verifyCta) verifyCta.style.display = verified ? 'none' : 'inline-block';
+
+    const successMsg = document.getElementById('inline-success');
+    if (successMsg) successMsg.style.display = verified ? 'inline-flex' : 'none';
 
     const badge = document.getElementById('user-badge');
     const emailEl = document.getElementById('user-email');
@@ -574,10 +574,8 @@
   }
 
   function showApproved() {
-    document.getElementById('inline-email').style.display = 'none';
-    document.getElementById('inline-submit').style.display = 'none';
-    document.getElementById('inline-msg').textContent = '';
-    document.getElementById('inline-success').style.display = 'block';
+    document.getElementById('inline-verify').style.display = 'none';
+    document.getElementById('inline-success').style.display = 'inline-flex';
     setVerified(submittedEmail);
   }
 
