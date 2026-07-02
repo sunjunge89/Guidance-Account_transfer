@@ -388,7 +388,8 @@
   }
 
   // ---- 인증 상태 확인 / 박스 잠금 처리 ----
-  // localStorage에 이메일 + 인증 시각을 저장해서, 7일간 재인증 없이 유지되도록 함
+  // localStorage에 이메일 + 서버 승인 시각을 저장해서, 7일간 재인증 없이 유지되도록 함
+  // ts는 로컬 시각이 아닌 시트의 승인 시각(approvedAt) 기준으로 저장
   const VERIFIED_KEY = 'nasmedia_verified_session';
   const VERIFIED_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7일
 
@@ -413,8 +414,11 @@
     return !!getVerifiedSession();
   }
 
-  function setVerified(email) {
-    localStorage.setItem(VERIFIED_KEY, JSON.stringify({ email: email, ts: Date.now() }));
+  function setVerified(email, approvedAt) {
+    // approvedAt(시트 승인 시각) 기준으로 저장 → 로그아웃/재인증해도 ts가 바뀌지 않음
+    const existing = getVerifiedSession();
+    const ts = approvedAt || (existing && existing.ts) || Date.now();
+    localStorage.setItem(VERIFIED_KEY, JSON.stringify({ email: email, ts: ts }));
     updateLockUI();
   }
 
@@ -513,7 +517,7 @@
 
     if (result.ok) {
       if (result.data.status === 'approved') {
-        showApproved();
+        showApproved(result.data.approvedAt);
       } else if (result.data.status === 'pending') {
         // 대기 중 → 상태 확인 버튼으로 전환
         btn.textContent = '상태 확인하기';
@@ -545,7 +549,7 @@
 
     if (result.ok) {
       if (result.data.status === 'approved') {
-        showApproved();
+        showApproved(result.data.approvedAt);
       } else {
         msgEl.style.color = 'rgba(17,17,17,0.65)';
         msgEl.textContent = '아직 대기중입니다. 잠시 후 다시 확인해주세요.';
@@ -573,10 +577,10 @@
     }
   }
 
-  function showApproved() {
+  function showApproved(approvedAt) {
     document.getElementById('inline-verify').style.display = 'none';
     document.getElementById('inline-success').style.display = 'inline-flex';
-    setVerified(submittedEmail);
+    setVerified(submittedEmail, approvedAt);
   }
 
   // support direct hash load / back-forward
@@ -599,16 +603,23 @@
     if (!session) return;
 
     const result = await callVerifyApi(session.email);
-    if (result.ok && result.data.status !== 'approved') {
-      localStorage.removeItem(VERIFIED_KEY);
-      updateLockUI();
-      // 가이드 페이지를 보고 있었다면 메인으로 돌려보냄
-      const activePage = document.querySelector('.page.active');
-      if (activePage && activePage.id !== 'home' && activePage.id !== 'verify') {
-        goTo('home');
+    if (result.ok) {
+      if (result.data.status === 'approved') {
+        // 승인 유지 중 - approvedAt 갱신 (시트 기준 ts 최신화)
+        if (result.data.approvedAt) {
+          setVerified(session.email, result.data.approvedAt);
+        }
+      } else {
+        // 승인 취소됨 - 로그아웃
+        localStorage.removeItem(VERIFIED_KEY);
+        updateLockUI();
+        const activePage = document.querySelector('.page.active');
+        if (activePage && activePage.id !== 'home') {
+          goTo('home');
+        }
       }
     }
-    // 네트워크 오류 등으로 result.ok가 false인 경우는 무시 (일시적 오류로 로그아웃시키지 않음)
+    // 네트워크 오류는 무시 (일시적 오류로 로그아웃시키지 않음)
   }
 </script>
 
