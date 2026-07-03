@@ -377,11 +377,49 @@
     border-bottom: 1.5px solid #eee;
   }
   .step-list { display: flex; flex-direction: column; gap: 20px; }
+  .step-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
   .step-item { display: flex; gap: 20px; align-items: flex-start; }
   .step-card {
     border: 1.5px solid #eee;
     border-radius: 14px;
     overflow: hidden;
+  }
+  .step-ol {
+    list-style: none;
+    padding: 20px 20px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    counter-reset: step-counter;
+  }
+  .step-ol li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--black);
+    counter-increment: step-counter;
+  }
+  .step-ol li::before {
+    content: counter(step-counter);
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eee;
+    color: #666;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
   }
   .step-card-header {
     display: flex;
@@ -561,34 +599,29 @@
           <h3 class="block-title">계정맵핑 프로세스</h3>
           <span class="block-meta">맵핑 연결 초대를 보내고, 초대 수락(=계정 맵핑 수락)을 하게 되면 바로 적용됩니다.</span>
         </div>
-        <div class="step-list">
+        <div class="step-grid">
           <div class="step-card">
             <div class="step-card-header label-nas">
               <span class="step-num">STEP 1</span>
               <span class="step-card-title">계정을 받는 주체</span>
             </div>
-            <div class="process-flow">
-              <span class="process-node">맵핑 받을 MCC 로그인</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">[계정] 실적 <strong>+</strong> 버튼 클릭 후<br>[기존 계정에 연결]</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">이관 받을 CID 입력<br>+ 담당 관리자 지정</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">[요청 보내기] 클릭</span>
-            </div>
+            <ol class="step-ol">
+              <li>맵핑 받을 MCC 로그인</li>
+              <li>[계정] 실적 <strong>+</strong> 버튼 클릭 후<br>[기존 계정에 연결]</li>
+              <li>이관 받을 CID 입력<br>+ 담당 관리자 지정</li>
+              <li>[요청 보내기] 클릭</li>
+            </ol>
           </div>
           <div class="step-card">
             <div class="step-card-header label-other">
               <span class="step-num">STEP 2</span>
               <span class="step-card-title">계정을 주는 주체</span>
             </div>
-            <div class="process-flow">
-              <span class="process-node">이관 예정 구글애즈 계정 로그인</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">관리 › 액세스 및 보안</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">[관리자] 탭 › 링크요청 › 작업: 동의</span>
-            </div>
+            <ol class="step-ol">
+              <li>이관 예정 구글애즈 계정 로그인</li>
+              <li>관리 › 액세스 및 보안</li>
+              <li>[관리자] 탭 › 링크요청 › 작업: 동의</li>
+            </ol>
           </div>
         </div>
       </div>
