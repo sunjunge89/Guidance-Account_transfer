@@ -513,13 +513,19 @@
   .ref-sub { font-size: 13px; color: #bbb; }
   .check-note {
     background: #fff;
-    border-left: 4px solid #EA4335;
-    border-radius: 0 10px 10px 0;
-    padding: 14px 20px;
-    font-size: 14px;
-    line-height: 1.6;
-    color: rgba(17,17,17,0.8);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--black);
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .check-note-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #EA4335;
+    display: block;
+    margin-bottom: 6px;
   }
   .text-ok { color: #1a7f37; }
   .text-warn { color: #c0392b; }
@@ -637,6 +643,7 @@
       </div>
 
       <div class="check-note">
+        <span class="check-note-title">필수 확인</span>
         나스미디어 MCC로 계정 맵핑 완료 후, 관리 → 액세스 및 보안 → [관리자] 탭에서 소유자 권한이 <strong>'예'</strong>로 설정되어 있는지 반드시 확인해주세요.
       </div>
 
