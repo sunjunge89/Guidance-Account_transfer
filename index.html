@@ -281,6 +281,35 @@
     cursor: pointer;
   }
 
+  /* ── 탭 ── */
+  .tab-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .tab-btn {
+    padding: 10px 24px;
+    border-radius: 999px;
+    border: 2px solid #ddd;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(17,17,17,0.45);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .tab-btn.active {
+    background: var(--black);
+    border-color: var(--black);
+    color: #fff;
+  }
+  .tab-btn:hover:not(.active) {
+    border-color: #bbb;
+    color: rgba(17,17,17,0.7);
+  }
+  .tab-panel { animation: fadeIn 0.2s ease; }
+
   /* ── 섹션 내부 페이지 ── */
   .section-wrap {
     max-width: 860px;
@@ -524,97 +553,95 @@
 <section class="page" id="account-mapping">
   <div class="section-wrap">
 
-    <!-- 상단 네비 -->
     <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
 
-    <!-- 섹션 헤더 -->
     <div class="section-header">
       <span class="section-badge box-1">01</span>
       <h2 class="section-title">계정 맵핑</h2>
       <p class="section-subtitle">구글계정 이관 시, 사전 진행 필요사항</p>
     </div>
 
-    <!-- 핵심 안내 -->
-    <div class="callout">
-      광고주 혹은 타대행사에서 운영하던 계정을 나스미디어로 이관하는 경우,<br>
-      <strong>사전에 계정 맵핑이 진행 되어야 합니다.</strong>
+    <!-- 탭 -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab(this, 'tab-mapping')">계정 맵핑</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-ref')">참고사항</button>
     </div>
 
-    <!-- 계정맵핑 프로세스 -->
-    <div class="content-block">
-      <h3 class="block-title">계정맵핑 프로세스</h3>
-
-      <div class="step-list">
-
-        <!-- STEP 1 -->
-        <div class="step-item">
-          <div class="step-label">소요시간</div>
-          <div class="step-body">
-            맵핑 연결 초대를 보내고, 초대 수락(=계정 맵핑 수락)을 하게 되면 바로 적용됩니다.
+    <!-- 탭 1: 계정 맵핑 -->
+    <div class="tab-panel" id="tab-mapping">
+      <div class="callout">
+        광고주 혹은 타대행사에서 운영하던 계정을 나스미디어로 이관하는 경우,<br>
+        <strong>사전에 계정 맵핑이 진행 되어야 합니다.</strong>
+      </div>
+      <div class="content-block">
+        <h3 class="block-title">계정맵핑 프로세스</h3>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-label">소요시간</div>
+            <div class="step-body">
+              맵핑 연결 초대를 보내고, 초대 수락(=계정 맵핑 수락)을 하게 되면 바로 적용됩니다.
+            </div>
           </div>
-        </div>
-
-        <!-- STEP 2 -->
-        <div class="step-item">
-          <div class="step-label">프로세스</div>
-          <div class="step-body">
-            <p class="step-desc">계정을 <strong>받는 사람</strong>이 진행합니다.</p>
-            <div class="process-flow">
-              <span class="process-node">맵핑 원하는 MCC 로그인</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">[계정] 실적 <strong>+</strong> 버튼 클릭 후<br>[기존 계정에 연결]</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">이관 할 CID 입력 후<br>[요청 보내기] 클릭</span>
+          <div class="step-item">
+            <div class="step-label">프로세스</div>
+            <div class="step-body">
+              <p class="step-desc">계정을 <strong>받는 사람</strong>이 진행합니다.</p>
+              <div class="process-flow">
+                <span class="process-node">맵핑 원하는 MCC 로그인</span>
+                <span class="process-arrow">›</span>
+                <span class="process-node">[계정] 실적 <strong>+</strong> 버튼 클릭 후<br>[기존 계정에 연결]</span>
+                <span class="process-arrow">›</span>
+                <span class="process-node">이관 할 CID 입력 후<br>[요청 보내기] 클릭</span>
+              </div>
+              <div class="screenshot-placeholder">스크린샷 영역</div>
             </div>
-            <!-- 스크린샷 영역 -->
-            <div class="screenshot-placeholder">스크린샷 영역</div>
           </div>
-        </div>
-
-        <!-- STEP 3 -->
-        <div class="step-item">
-          <div class="step-label">계정 맵핑 수락</div>
-          <div class="step-body">
-            <p class="step-desc">계정을 <strong>주는 사람</strong>이 승인합니다.</p>
-            <div class="process-flow">
-              <span class="process-node">이관 예정 구글애즈 계정 로그인</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">도구 및 설정 ›<br>[관리] 액세스 및 보안</span>
-              <span class="process-arrow">›</span>
-              <span class="process-node">[관리자] 탭 내<br>맵핑 요청사항 승인 클릭</span>
-            </div>
-            <!-- 스크린샷 영역 -->
-            <div class="screenshot-placeholder">스크린샷 영역</div>
-            <div class="sub-note">
-              계정맵핑 수락의 경우, 기존 운영주체였던 광고주 OR 기존 대행사가 처리 진행해주시면 됩니다.
-            </div>
-            <div class="alert-note">
-              🔴 계정 맵핑 진행 시, 나스미디어 매출로 집계되기 위해서 계정 소유자 권한 <strong>'예'</strong>로 설정할 수 있도록 안내 해주시기 바랍니다.
-            </div>
-            <div class="info-note">
-              * 계정 소유자 권한 설정의 경우, [관리자] 탭 내 맵핑 이후 맵핑 된 나스미디어 MCC 소유자 탭 부분에 <strong>'예'</strong>로 설정 되어 있는지 확인해주시면 됩니다.
+          <div class="step-item">
+            <div class="step-label">계정 맵핑 수락</div>
+            <div class="step-body">
+              <p class="step-desc">계정을 <strong>주는 사람</strong>이 승인합니다.</p>
+              <div class="process-flow">
+                <span class="process-node">이관 예정 구글애즈 계정 로그인</span>
+                <span class="process-arrow">›</span>
+                <span class="process-node">도구 및 설정 ›<br>[관리] 액세스 및 보안</span>
+                <span class="process-arrow">›</span>
+                <span class="process-node">[관리자] 탭 내<br>맵핑 요청사항 승인 클릭</span>
+              </div>
+              <div class="screenshot-placeholder">스크린샷 영역</div>
+              <div class="sub-note">
+                계정맵핑 수락의 경우, 기존 운영주체였던 광고주 OR 기존 대행사가 처리 진행해주시면 됩니다.
+              </div>
+              <div class="alert-note">
+                🔴 계정 맵핑 진행 시, 나스미디어 매출로 집계되기 위해서 계정 소유자 권한 <strong>'예'</strong>로 설정할 수 있도록 안내 해주시기 바랍니다.
+              </div>
+              <div class="info-note">
+                * 계정 소유자 권한 설정의 경우, [관리자] 탭 내 맵핑 이후 맵핑 된 나스미디어 MCC 소유자 탭 부분에 <strong>'예'</strong>로 설정 되어 있는지 확인해주시면 됩니다.
+              </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- 참고사항 -->
-    <div class="content-block">
-      <h3 class="block-title">참고사항</h3>
-      <div class="ref-box">
-        <p class="ref-main">계정 이관 진행 시, 계정 예산이 <strong>'종료'</strong> 상태여야 합니다. <span class="ref-date">(25-12-16 수정)</span></p>
-        <ul class="ref-list">
-          <li><span class="tag-gray">직접결제(카드 등) → 인보이스</span> 변경 시, 예산 종료 <strong class="text-ok">필요 없음</strong> <span class="ref-sub">(양식서 통한 접수 필요)</span></li>
-          <li><span class="tag-gray">인보이스 → 인보이스</span> 변경 시, 예산 종료 <strong class="text-ok">필요 없음</strong> <span class="ref-sub">(구글애즈 계정 내 직접 진행)</span></li>
-          <li><span class="tag-gray">인보이스 → 직접결제(카드 등)</span> 변경 시, 예산 종료 <strong class="text-warn">필요</strong> <span class="ref-sub">(양식서 통한 접수 필요)</span></li>
-        </ul>
+    <!-- 탭 2: 참고사항 -->
+    <div class="tab-panel" id="tab-ref" style="display:none;">
+      <div class="content-block">
+        <h3 class="block-title">참고사항</h3>
+        <div class="ref-box">
+          <p class="ref-main">계정 이관 진행 시, 계정 예산이 <strong>'종료'</strong> 상태여야 합니다. <span class="ref-date">(25-12-16 수정)</span></p>
+          <ul class="ref-list">
+            <li><span class="tag-gray">직접결제(카드 등) → 인보이스</span> 변경 시, 예산 종료 <strong class="text-ok">필요 없음</strong> <span class="ref-sub">(양식서 통한 접수 필요)</span></li>
+            <li><span class="tag-gray">인보이스 → 인보이스</span> 변경 시, 예산 종료 <strong class="text-ok">필요 없음</strong> <span class="ref-sub">(구글애즈 계정 내 직접 진행)</span></li>
+            <li><span class="tag-gray">인보이스 → 직접결제(카드 등)</span> 변경 시, 예산 종료 <strong class="text-warn">필요</strong> <span class="ref-sub">(양식서 통한 접수 필요)</span></li>
+          </ul>
+        </div>
       </div>
     </div>
 
   </div>
 </section>
+
+
 
 <section class="page" id="direct-advertiser">
   <div class="sub-hero">
@@ -641,6 +668,14 @@
 </section>
 
 <script>
+  function switchTab(btn, panelId) {
+    const section = btn.closest('.section-wrap');
+    section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    section.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    btn.classList.add('active');
+    document.getElementById(panelId).style.display = 'block';
+  }
+
   function goTo(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById(id);
