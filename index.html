@@ -512,32 +512,14 @@
   .tag-gray { background: #eee; border-radius: 5px; padding: 3px 10px; font-size: 13px; font-weight: 500; color: #444; white-space: nowrap; }
   .ref-sub { font-size: 13px; color: #bbb; }
   .check-note {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    background: #f0f7ff;
-    border: 1.5px solid #c2d9f8;
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-top: 20px;
-  }
-  .check-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .check-note strong {
-    display: block;
+    background: #fff;
+    border-left: 4px solid #EA4335;
+    border-radius: 0 10px 10px 0;
+    padding: 14px 20px;
     font-size: 14px;
-    font-weight: 700;
-    color: #1a73e8;
-    margin-bottom: 6px;
-  }
-  .check-note p {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.65;
-    color: rgba(17,17,17,0.75);
+    line-height: 1.6;
+    color: rgba(17,17,17,0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
   .text-ok { color: #1a7f37; }
   .text-warn { color: #c0392b; }
@@ -652,14 +634,10 @@
             </ol>
           </div>
         </div>
+      </div>
 
-        <div class="check-note">
-          <span class="check-icon">✅</span>
-          <div>
-            <strong>맵핑 완료 후 반드시 확인</strong>
-            <p>관리 → 액세스 및 보안 → [관리자] 탭에서 나스미디어 MCC의 <strong>소유자 권한이 '예'</strong>로 설정되어 있는지 확인해주세요.</p>
-          </div>
-        </div>
+      <div class="check-note">
+        나스미디어 MCC로 계정 맵핑 완료 후, 관리 → 액세스 및 보안 → [관리자] 탭에서 소유자 권한이 <strong>'예'</strong>로 설정되어 있는지 반드시 확인해주세요.
       </div>
 
   </div>
