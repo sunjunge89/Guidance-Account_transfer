@@ -6,13 +6,19 @@ export default async function handler(req, res) {
     return;
   }
 
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfDR10iH-wnl_jy2KWL-oTeTlULNzlffziXt-ipBVXS9hpvstKUtPa4Z8lLRyfhK_d6g/exec';
+  // ⚠️ 새 배포 URL로 교체됨 (2026-07 매직링크 버전)
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVOA4vbxabqczif6EAMwGk4DdMgg5W_yWxGlYaSQv3VJ-VPflCXvAxPClZK_LkX2U3Kw/exec';
 
   try {
-    const response = await fetch(`${APPS_SCRIPT_URL}?email=${encodeURIComponent(email)}`, {
-      method: 'GET',
-      redirect: 'follow'
-    });
+    // 캐시버스팅 파라미터(_) 추가 + fetch 캐시 비활성화
+    const response = await fetch(
+      `${APPS_SCRIPT_URL}?email=${encodeURIComponent(email)}&_=${Date.now()}`,
+      {
+        method: 'GET',
+        redirect: 'follow',
+        cache: 'no-store',
+      }
+    );
 
     const rawText = await response.text();
 
@@ -20,22 +26,23 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(rawText);
     } catch (parseErr) {
-      // 구글이 JSON이 아닌 응답(에러 페이지 등)을 준 경우, 디버깅을 위해 그대로 노출
+      // 구글이 JSON이 아닌 응답(예: 에러 페이지 등)을 준 경우, 디버깅을 위해 그대로 노출
       res.status(502).json({
         status: 'error',
         message: 'apps script returned non-json response',
         upstream_status: response.status,
-        upstream_body_preview: rawText.slice(0, 300)
+        upstream_body_preview: rawText.slice(0, 300),
       });
       return;
     }
 
+    // 브라우저/중간 프록시가 이 응답을 캐시하지 않도록 명시
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      message: 'failed to reach verification server',
-      error_detail: String(err)
+      message: err.message || 'unknown error',
     });
   }
 }
