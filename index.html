@@ -838,12 +838,12 @@
       if (result.data.status === 'approved') {
         showApproved(result.data.approvedAt);
       } else if (result.data.status === 'pending') {
-        // 대기 중 → 상태 확인 버튼으로 전환
-        btn.textContent = '상태 확인하기';
+        // 메일 발송됨 → 인증 확인 버튼으로 전환
+        btn.textContent = '인증 확인하기';
         btn.disabled = false;
         btn.onclick = checkStatus;
         msgEl.style.color = 'rgba(17,17,17,0.65)';
-        msgEl.textContent = '신청이 접수되었습니다. 담당자 승인 후 아래 버튼으로 확인해주세요.';
+        msgEl.textContent = '📩 입력하신 메일로 인증 링크를 보내드렸어요. 메일함에서 링크를 클릭한 뒤, 아래 버튼으로 확인해주세요.';
       } else {
         msgEl.style.color = '#c0392b';
         msgEl.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
@@ -871,21 +871,24 @@
         showApproved(result.data.approvedAt);
       } else {
         msgEl.style.color = 'rgba(17,17,17,0.65)';
-        msgEl.textContent = '아직 대기중입니다. 잠시 후 다시 확인해주세요.';
-        btn.textContent = '상태 확인하기';
+        msgEl.textContent = '아직 메일의 링크를 클릭하지 않으신 것 같아요. 메일함(스팸함 포함)을 확인해주세요.';
+        btn.textContent = '인증 확인하기';
         btn.disabled = false;
       }
     } else {
       msgEl.style.color = '#c0392b';
       msgEl.textContent = result.message;
-      btn.textContent = '상태 확인하기';
+      btn.textContent = '인증 확인하기';
       btn.disabled = false;
     }
   }
 
   async function callVerifyApi(email) {
     try {
-      const res = await fetch(`${VERIFY_API_URL}?email=${encodeURIComponent(email)}`);
+      const res = await fetch(
+        `${VERIFY_API_URL}?email=${encodeURIComponent(email)}&_=${Date.now()}`,
+        { cache: 'no-store' }
+      );
       const data = await res.json();
       if (data.status === 'error') {
         return { ok: false, message: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' };
