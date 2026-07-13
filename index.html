@@ -430,6 +430,7 @@
   }
   .step-card-header.label-nas  { background: #1a73e8; }
   .step-card-header.label-other { background: #444; }
+  .step-card-header.label-red { background: var(--g-red); }
   .step-num {
     font-size: 11px;
     font-weight: 700;
@@ -666,11 +667,70 @@
 
 
 <section class="page" id="direct-advertiser">
-  <div class="sub-hero">
-    <p>Coming Soon</p>
-    <span>준비 중인 페이지입니다. (2)</span>
+  <div class="section-wrap">
+
+    <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+
+    <div class="section-header">
+      <span class="section-badge box-2">02</span>
+      <h2 class="section-title">직광고주 이관</h2>
+    </div>
+
+    <div class="callout">
+      광고주가 Google에 <strong>직접 결제</strong>하던 계정을,<br>
+      <strong>나스미디어 인보이스(월별 청구) 결제 방식으로 전환하는 절차</strong>입니다.
+    </div>
+
+    <div class="content-block">
+      <div class="block-title-row">
+        <h3 class="block-title">STEP 1. 사전 확인</h3>
+        <span class="block-meta">신청 전 아래 사항을 먼저 확인합니다.</span>
+      </div>
+      <div class="ref-box">
+        <ul class="ref-list">
+          <li>✔️ 광고주와 결제방식 변경 일정 협의</li>
+          <li>✔️ 현재 결제 프로필 담당자의 승인 가능 여부 확인</li>
+          <li>✔️ 이관 대상 Google Ads CID 확인</li>
+          <li>✔️ 계정을 연결할 MCC 확인</li>
+          <li>✔️ 사용할 인보이스(결제 계정) 확인</li>
+        </ul>
+      </div>
+      <div class="alert-note">
+        ※ 참고<br>
+        결제방식 변경 신청 후에는 <strong>현재 결제 프로필 담당자</strong>와 <strong>신규 결제 프로필 담당자</strong> 모두 Google 승인 메일을 통해 승인 절차를 완료해야 최종 전환됩니다.
+      </div>
+    </div>
+
+    <div class="content-block">
+      <div class="block-title-row">
+        <h3 class="block-title">STEP 2. Google 신청서 작성</h3>
+        <span class="block-meta">결제방식 변경 신청</span>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header label-red">
+          <span class="step-num">FORM</span>
+          <span class="step-card-title">Google 신청서 입력 가이드</span>
+        </div>
+        <ol class="step-ol">
+          <li>아래 Google 신청 URL 접속 (하위 계정 또는 MCC 관리자 계정으로 로그인)</li>
+          <li>'결제 책임자 이전(지불자 변경) 유형' 문항에서 <strong>'수동 또는 자동 결제에서 월별 인보이스로 전환'</strong> 선택</li>
+          <li>'Google에 설정된 이용 한도액이 이미 있으신가요?' 문항 — 사용할 한도액을 이미 부여받았다면 <strong>'예'</strong>, 새로 신청해야 한다면 <strong>'아니요'</strong> 선택</li>
+          <li>이관 대상 CID, 연결할 MCC, 사용할 인보이스 정보 입력 후 제출</li>
+        </ol>
+      </div>
+
+      <p class="sub-note">
+        <a href="https://support.google.com/google-ads/contact/inv_to_man_auto?hl=ko" target="_blank" rel="noopener">→ Google 신청서 바로가기</a>
+      </p>
+    </div>
+
+    <div class="check-note">
+      <span class="check-note-title">필수 확인</span>
+      이 요청은 <mark>하위 계정 또는 MCC의 관리자만 제출할 수 있습니다.</mark> 회사 결제 프로필에 속한 계정이라면, 하위 계정 또는 MCC의 관리자에게 연락하여 이 양식을 대신 제출하도록 요청하시기 바랍니다.
+    </div>
+
   </div>
-  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
 </section>
 
 <section class="page" id="agency-transfer">
