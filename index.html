@@ -452,6 +452,22 @@
     transition: opacity 0.15s ease;
   }
   .quick-link:hover { opacity: 0.85; }
+  .callout-red { border-left-color: var(--g-red); }
+  .step-grid-media {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .step-grid-media .step-card-image.standalone {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+  }
+  .step-grid-media .step-card-image.standalone img {
+    width: 100%;
+  }
   .step-num {
     font-size: 11px;
     font-weight: 700;
@@ -697,7 +713,7 @@
       <h2 class="section-title">직광고주 이관</h2>
     </div>
 
-    <div class="callout">
+    <div class="callout callout-red">
       광고주가 Google에 <strong>직접 결제</strong>하던 계정을,<br>
       <strong>나스미디어 인보이스(월별 청구) 결제 방식으로 전환하는 절차</strong>입니다.
     </div>
@@ -729,16 +745,16 @@
         <a class="quick-link" href="https://support.google.com/google-ads/contact/inv_to_man_auto?hl=ko" target="_blank" rel="noopener">Google 신청서 바로가기 →</a>
       </div>
 
-      <div class="step-grid">
+      <div class="step-grid step-grid-media">
         <div class="step-card">
           <div class="step-card-header label-red">
             <span class="step-num">FORM</span>
             <span class="step-card-title">Google 신청서 입력 가이드</span>
           </div>
           <ol class="step-ol">
-            <li>위 '신청서 바로가기' 접속 (하위 계정 또는 MCC 관리자 계정으로 로그인)</li>
-            <li>'결제 책임자 이전(지불자 변경) 유형' 문항에서 <strong>'수동 또는 자동 결제에서 월별 인보이스로 전환'</strong> 선택</li>
-            <li>'Google에 설정된 이용 한도액이 이미 있으신가요?' 문항 — 사용할 한도액을 이미 부여받았다면 <strong>'예'</strong>, 새로 신청해야 한다면 <strong>'아니요'</strong> 선택</li>
+            <li>위 <strong>Google 신청서 바로가기</strong>로 접속 (하위 계정 또는 MCC 관리자 계정으로 로그인)</li>
+            <li><strong>결제 책임자 이전(지불자 변경) 유형</strong> 문항 → <strong>「수동 또는 자동 결제에서 월별 인보이스로 전환」</strong> 선택</li>
+            <li><strong>이용 한도액 보유 여부</strong> 문항 → 사용할 한도액을 이미 부여받았다면 <strong>「예」</strong>, 새로 신청해야 한다면 <strong>「아니요」</strong> 선택</li>
             <li>이관 대상 CID, 연결할 MCC, 사용할 인보이스 정보 입력 후 제출</li>
           </ol>
         </div>
