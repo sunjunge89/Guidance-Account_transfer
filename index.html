@@ -799,7 +799,7 @@
   // localStorage에 이메일 + 서버 승인 시각을 저장해서, 7일간 재인증 없이 유지되도록 함
   // ts는 로컬 시각이 아닌 시트의 승인 시각(approvedAt) 기준으로 저장
   const VERIFIED_KEY = 'nasmedia_verified_session';
-  const VERIFIED_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7일
+  const VERIFIED_TTL_MS = 24 * 60 * 60 * 1000; // 24시간
 
   function getVerifiedSession() {
     const raw = localStorage.getItem(VERIFIED_KEY);
