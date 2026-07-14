@@ -346,6 +346,8 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
   .callout-red { border-left-color: var(--g-red); }
+  .callout-yellow { border-left-color: var(--g-yellow); }
+  .callout-green { border-left-color: var(--g-green); }
   .content-block {
     background: #fff;
     border-radius: 18px;
@@ -684,19 +686,39 @@
   </div>
 </section>
 <section class="page" id="agency-transfer">
-  <div class="sub-hero">
-    <p>Coming Soon</p>
-    <span>준비 중인 페이지입니다. (3)</span>
+  <div class="section-wrap">
+
+    <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+
+    <div class="section-header">
+      <span class="section-badge box-3">03</span>
+      <h2 class="section-title">대행사&렙 이관</h2>
+    </div>
+
+    <div class="callout callout-yellow">
+      타사(대행사·렙)에서 관리하던 <strong>인보이스 결제 계정</strong>을,<br>
+      <strong>나스미디어 인보이스로 전환하는 절차</strong>입니다.
+    </div>
+
   </div>
-  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
 </section>
 
 <section class="page" id="reverse-transfer">
-  <div class="sub-hero">
-    <p>Coming Soon</p>
-    <span>준비 중인 페이지입니다. (4)</span>
+  <div class="section-wrap">
+
+    <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+
+    <div class="section-header">
+      <span class="section-badge box-4">04</span>
+      <h2 class="section-title">피이관</h2>
+    </div>
+
+    <div class="callout callout-green">
+      나스미디어 인보이스로 결제하던 계정을,<br>
+      <strong>타사(대행사·렙 등)의 직접 결제 방식으로 전환하는 절차</strong>입니다.
+    </div>
+
   </div>
-  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
 </section>
 
 <script>
