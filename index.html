@@ -345,6 +345,7 @@
     margin-bottom: 28px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
+  .callout-red { border-left-color: var(--g-red); }
   .content-block {
     background: #fff;
     border-radius: 18px;
@@ -666,11 +667,21 @@
 
 
 <section class="page" id="direct-advertiser">
-  <div class="sub-hero">
-    <p>Coming Soon</p>
-    <span>준비 중인 페이지입니다. (2)</span>
+  <div class="section-wrap">
+
+    <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
+
+    <div class="section-header">
+      <span class="section-badge box-2">02</span>
+      <h2 class="section-title">직광고주 이관</h2>
+    </div>
+
+    <div class="callout callout-red">
+      광고주가 Google에 <strong>직접 결제</strong>하던 계정을,<br>
+      <strong>나스미디어 인보이스(월별 청구) 결제 방식으로 전환하는 절차</strong>입니다.
+    </div>
+
   </div>
-  <button class="back" onclick="goTo('home')">← 메인으로 돌아가기</button>
 </section>
 <section class="page" id="agency-transfer">
   <div class="sub-hero">
