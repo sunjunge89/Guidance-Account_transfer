@@ -901,71 +901,85 @@
     history.replaceState(null, '', '#' + id);
   }
 
-  // ---- 인증 상태 확인 / 박스 잠금 처리 ----
-  // localStorage에 이메일 + 서버 승인 시각을 저장해서, 7일간 재인증 없이 유지되도록 함
-  // ts는 로컬 시각이 아닌 시트의 승인 시각(approvedAt) 기준으로 저장
+  // ==================================================================
+  //  임직원 인증 (매직링크 방식) - 2026-07 재설계
+  // ==================================================================
+
+  const VERIFY_API_URL = '/api/verify';
   const VERIFIED_KEY = 'nasmedia_verified_session';
   const VERIFIED_TTL_MS = 24 * 60 * 60 * 1000; // 24시간
 
-  function getVerifiedSession() {
+  let submittedEmail = '';
+
+  // ---------------- 로컬 세션 (localStorage) ----------------
+
+  function readSession() {
     const raw = localStorage.getItem(VERIFIED_KEY);
     if (!raw) return null;
+
+    let parsed;
     try {
-      const parsed = JSON.parse(raw);
-      if (!parsed.email || !parsed.ts) return null;
-      if (Date.now() - parsed.ts > VERIFIED_TTL_MS) {
-        localStorage.removeItem(VERIFIED_KEY);
-        return null;
-      }
-      return parsed;
+      parsed = JSON.parse(raw);
     } catch (e) {
       localStorage.removeItem(VERIFIED_KEY);
       return null;
     }
+
+    if (!parsed || !parsed.email || !parsed.ts) {
+      localStorage.removeItem(VERIFIED_KEY);
+      return null;
+    }
+
+    if (Date.now() - parsed.ts > VERIFIED_TTL_MS) {
+      localStorage.removeItem(VERIFIED_KEY);
+      return null;
+    }
+
+    return parsed;
+  }
+
+  function writeSession(email, approvedAt) {
+    const existing = readSession();
+    const ts = approvedAt || (existing && existing.ts) || Date.now();
+    localStorage.setItem(VERIFIED_KEY, JSON.stringify({ email: email, ts: ts }));
+  }
+
+  function clearSession() {
+    localStorage.removeItem(VERIFIED_KEY);
   }
 
   function isVerified() {
-    return !!getVerifiedSession();
-  }
-
-  function setVerified(email, approvedAt) {
-    // approvedAt(시트 승인 시각) 기준으로 저장 → 로그아웃/재인증해도 ts가 바뀌지 않음
-    const existing = getVerifiedSession();
-    const ts = approvedAt || (existing && existing.ts) || Date.now();
-    localStorage.setItem(VERIFIED_KEY, JSON.stringify({ email: email, ts: ts }));
-    updateLockUI();
-  }
-
-  function logout() {
-    localStorage.removeItem(VERIFIED_KEY);
-    updateLockUI();
-    goTo('home');
+    return !!readSession();
   }
 
   function formatRemaining(session) {
     const remainMs = VERIFIED_TTL_MS - (Date.now() - session.ts);
     if (remainMs <= 0) return '곧 만료';
     const totalMinutes = Math.floor(remainMs / 60000);
-    const days = Math.floor(totalMinutes / (60 * 24));
-    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-    if (days > 0) return `${days}일 ${hours}시간 남음`;
+    const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
     if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
     return `${minutes}분 남음`;
   }
 
-  function updateLockUI() {
-    const session = getVerifiedSession();
+  // ---------------- 화면 갱신 ----------------
+
+  function renderAuthUI() {
+    const session = readSession();
     const verified = !!session;
 
-    document.querySelectorAll('#box-grid .box').forEach(btn => {
+    document.querySelectorAll('#box-grid .box').forEach(function (btn) {
       btn.classList.toggle('locked', !verified);
     });
-    const note = document.getElementById('lock-note');
-    if (note) note.style.display = verified ? 'none' : 'block';
+
+    const lockNote = document.getElementById('lock-note');
+    if (lockNote) lockNote.style.display = verified ? 'none' : 'block';
 
     const verifyCta = document.getElementById('verify-cta');
     if (verifyCta) verifyCta.style.display = verified ? 'none' : 'inline-block';
+
+    const inlineVerify = document.getElementById('inline-verify');
+    if (inlineVerify && verified) inlineVerify.style.display = 'none';
 
     const successMsg = document.getElementById('inline-success');
     if (successMsg) successMsg.style.display = verified ? 'inline-flex' : 'none';
@@ -973,9 +987,9 @@
     const badge = document.getElementById('user-badge');
     const emailEl = document.getElementById('user-email');
     const remainEl = document.getElementById('user-remain');
-    if (badge && emailEl) {
+    if (badge) {
       if (verified) {
-        emailEl.textContent = session.email;
+        if (emailEl) emailEl.textContent = session.email;
         if (remainEl) remainEl.textContent = formatRemaining(session);
         badge.style.display = 'flex';
       } else {
@@ -988,8 +1002,7 @@
     if (!isVerified()) {
       if (btn) {
         btn.classList.remove('shake');
-        // 리플로우를 강제해서 같은 박스를 연속 클릭해도 애니메이션이 다시 재생되게 함
-        void btn.offsetWidth;
+        void btn.offsetWidth; // 리플로우 강제 -> 연속 클릭해도 애니메이션 재생
         btn.classList.add('shake');
       }
       return;
@@ -997,147 +1010,169 @@
     goTo(id);
   }
 
-  // ---- 임직원 인증 (인라인 방식) ----
-  const VERIFY_API_URL = '/api/verify';
-  let submittedEmail = '';
+  function logout() {
+    clearSession();
+    renderAuthUI();
+    goTo('home');
+  }
+
+  // ---------------- 인증 폼 UI ----------------
 
   function toggleInlineVerify() {
     const form = document.getElementById('inline-verify');
-    const isVisible = form.style.display === 'block';
-    form.style.display = isVisible ? 'none' : 'block';
-    if (!isVisible) {
-      document.getElementById('inline-email').focus();
+    if (!form) return;
+    const isOpen = form.style.display === 'block';
+    form.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) {
+      const input = document.getElementById('inline-email');
+      if (input) input.focus();
     }
   }
 
-  async function sendCode() {
-    const email = document.getElementById('inline-email').value.trim();
+  function setFormMessage(text, isError) {
     const msgEl = document.getElementById('inline-msg');
-    const btn = document.getElementById('inline-submit');
+    if (!msgEl) return;
+    msgEl.textContent = text;
+    msgEl.style.color = isError ? '#c0392b' : 'rgba(17,17,17,0.65)';
+  }
 
-    const isValid = /^[a-zA-Z0-9._%+-]+@nasmedia\.co\.kr$/i.test(email);
-    if (!isValid) {
-      msgEl.style.color = '#c0392b';
-      msgEl.textContent = '@nasmedia.co.kr 메일 주소만 사용 가능합니다.';
+  function setSubmitButton(text, enabled) {
+    const btn = document.getElementById('inline-submit');
+    if (!btn) return;
+    btn.textContent = text;
+    btn.disabled = !enabled;
+  }
+
+  // ---------------- API 호출 ----------------
+
+  async function requestVerification(email) {
+    const url = `${VERIFY_API_URL}?email=${encodeURIComponent(email)}&_=${Date.now()}`;
+
+    let response;
+    try {
+      response = await fetch(url);
+    } catch (networkErr) {
+      return { ok: false, message: '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.' };
+    }
+
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseErr) {
+      return { ok: false, message: '서버 응답을 처리하는 중 오류가 발생했습니다.' };
+    }
+
+    if (!data || data.status === 'error') {
+      const detail = (data && data.message) ? ` (${data.message})` : '';
+      return { ok: false, message: '서버 오류가 발생했습니다.' + detail };
+    }
+
+    return { ok: true, status: data.status, approvedAt: data.approvedAt || null };
+  }
+
+  // ---------------- 이벤트 핸들러 ----------------
+
+  async function sendCode() {
+    const emailInput = document.getElementById('inline-email');
+    const email = emailInput ? emailInput.value.trim() : '';
+
+    const isValidDomain = /^[a-zA-Z0-9._%+-]+@nasmedia\.co\.kr$/i.test(email);
+    if (!isValidDomain) {
+      setFormMessage('@nasmedia.co.kr 메일 주소만 사용 가능합니다.', true);
       return;
     }
 
-    msgEl.textContent = '';
-    btn.textContent = '확인 중...';
-    btn.disabled = true;
     submittedEmail = email;
+    setFormMessage('', false);
+    setSubmitButton('확인 중...', false);
 
-    const result = await callVerifyApi(email);
+    const result = await requestVerification(email);
 
-    if (result.ok) {
-      if (result.data.status === 'approved') {
-        showApproved(result.data.approvedAt);
-      } else if (result.data.status === 'pending') {
-        // 메일 발송됨 → 인증 확인 버튼으로 전환
-        btn.textContent = '인증 확인하기';
-        btn.disabled = false;
-        btn.onclick = checkStatus;
-        msgEl.style.color = 'rgba(17,17,17,0.65)';
-        msgEl.textContent = '📩 입력하신 메일로 인증 링크를 보내드렸어요. 메일함에서 링크를 클릭한 뒤, 아래 버튼으로 확인해주세요.';
-      } else {
-        msgEl.style.color = '#c0392b';
-        msgEl.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
-        btn.textContent = '신청하기';
-        btn.disabled = false;
-      }
-    } else {
-      msgEl.style.color = '#c0392b';
-      msgEl.textContent = result.message;
-      btn.textContent = '신청하기';
-      btn.disabled = false;
+    if (!result.ok) {
+      setFormMessage(result.message, true);
+      setSubmitButton('신청하기', true);
+      return;
     }
+
+    if (result.status === 'approved') {
+      completeVerification(email, result.approvedAt);
+      return;
+    }
+
+    if (result.status === 'pending') {
+      setSubmitButton('인증 확인하기', true);
+      const btn = document.getElementById('inline-submit');
+      if (btn) btn.onclick = checkStatus;
+      setFormMessage('📩 입력하신 메일로 인증 링크를 보내드렸어요. 메일함에서 링크를 클릭한 뒤, 아래 버튼으로 확인해주세요.', false);
+      return;
+    }
+
+    setFormMessage('알 수 없는 응답입니다. 다시 시도해주세요.', true);
+    setSubmitButton('신청하기', true);
   }
 
   async function checkStatus() {
-    const msgEl = document.getElementById('inline-msg');
-    const btn = document.getElementById('inline-submit');
-    btn.textContent = '확인 중...';
-    btn.disabled = true;
+    setSubmitButton('확인 중...', false);
 
-    const result = await callVerifyApi(submittedEmail);
+    const result = await requestVerification(submittedEmail);
 
-    if (result.ok) {
-      if (result.data.status === 'approved') {
-        showApproved(result.data.approvedAt);
-      } else {
-        msgEl.style.color = 'rgba(17,17,17,0.65)';
-        msgEl.textContent = '아직 메일의 링크를 클릭하지 않으신 것 같아요. 메일함(스팸함 포함)을 확인해주세요.';
-        btn.textContent = '인증 확인하기';
-        btn.disabled = false;
-      }
+    if (!result.ok) {
+      setFormMessage(result.message, true);
+      setSubmitButton('인증 확인하기', true);
+      return;
+    }
+
+    if (result.status === 'approved') {
+      completeVerification(submittedEmail, result.approvedAt);
+      return;
+    }
+
+    setFormMessage('아직 메일의 링크를 클릭하지 않으신 것 같아요. 메일함(스팸함 포함)을 확인해주세요.', false);
+    setSubmitButton('인증 확인하기', true);
+  }
+
+  function completeVerification(email, approvedAt) {
+    writeSession(email, approvedAt);
+    renderAuthUI();
+  }
+
+  // ---------------- 백그라운드 재검증 ----------------
+  // 로컬에 인증 캐시가 남아있어도, 서버(시트)에서 승인이 취소됐으면 즉시 로그아웃 처리
+
+  async function revalidateWithServer() {
+    const session = readSession();
+    if (!session) return;
+
+    const result = await requestVerification(session.email);
+    if (!result.ok) return; // 네트워크 오류는 무시 (일시적 오류로 로그아웃시키지 않음)
+
+    if (result.status === 'approved') {
+      writeSession(session.email, result.approvedAt);
+      renderAuthUI();
     } else {
-      msgEl.style.color = '#c0392b';
-      msgEl.textContent = result.message;
-      btn.textContent = '인증 확인하기';
-      btn.disabled = false;
-    }
-  }
-
-  async function callVerifyApi(email) {
-    try {
-      const res = await fetch(
-        `${VERIFY_API_URL}?email=${encodeURIComponent(email)}&_=${Date.now()}`,
-        { cache: 'no-store' }
-      );
-      const data = await res.json();
-      if (data.status === 'error') {
-        return { ok: false, message: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' };
+      clearSession();
+      renderAuthUI();
+      const activePage = document.querySelector('.page.active');
+      if (activePage && activePage.id !== 'home') {
+        goTo('home');
       }
-      return { ok: true, data };
-    } catch (err) {
-      return { ok: false, message: '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.' };
     }
   }
 
-  function showApproved(approvedAt) {
-    document.getElementById('inline-verify').style.display = 'none';
-    document.getElementById('inline-success').style.display = 'inline-flex';
-    setVerified(submittedEmail, approvedAt);
-  }
+  // ---------------- 초기화 ----------------
 
-  // support direct hash load / back-forward
-  window.addEventListener('DOMContentLoaded', () => {
-    updateLockUI();
-    setInterval(updateLockUI, 60 * 1000); // 1분마다 남은 시간 갱신
+  window.addEventListener('DOMContentLoaded', function () {
+    renderAuthUI();
+    setInterval(renderAuthUI, 60 * 1000); // 1분마다 남은 시간 표시 갱신
 
-    revalidateWithServer(); // 페이지 진입 시 서버 승인 상태 재확인
-    setInterval(revalidateWithServer, 5 * 60 * 1000); // 5분마다 서버 승인 상태 재확인 (승인 취소 즉시 반영)
+    revalidateWithServer();
+    setInterval(revalidateWithServer, 5 * 60 * 1000); // 5분마다 서버 승인 상태 재확인
 
     const hash = window.location.hash.replace('#', '');
     if (hash && document.getElementById(hash)) {
       goTo(hash);
     }
   });
-
-  // 로컬에 인증 캐시가 남아있어도, 서버(시트)에서 승인이 취소됐으면 즉시 로그아웃 처리
-  async function revalidateWithServer() {
-    const session = getVerifiedSession();
-    if (!session) return;
-
-    const result = await callVerifyApi(session.email);
-    if (result.ok) {
-      if (result.data.status === 'approved') {
-        // 승인 유지 중 - approvedAt 갱신 (시트 기준 ts 최신화)
-        if (result.data.approvedAt) {
-          setVerified(session.email, result.data.approvedAt);
-        }
-      } else {
-        // 승인 취소됨 - 로그아웃
-        localStorage.removeItem(VERIFIED_KEY);
-        updateLockUI();
-        const activePage = document.querySelector('.page.active');
-        if (activePage && activePage.id !== 'home') {
-          goTo('home');
-        }
-      }
-    }
-    // 네트워크 오류는 무시 (일시적 오류로 로그아웃시키지 않음)
-  }
 </script>
 
 </body>
