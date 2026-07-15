@@ -368,6 +368,21 @@
     background: #cfead9;
     border-radius: 12px;
   }
+  .top-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--g-red);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 999px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: opacity 0.15s ease;
+  }
+  .top-link-btn:hover { opacity: 0.88; }
   mark {
     background: #b3e5fc;
     color: #111;
@@ -420,7 +435,7 @@
     margin-bottom: 14px;
     line-height: 1.6;
   }
-  .gf-q .req { color: #d93025; margin-left: 2px; }
+  .req { color: #d93025; margin-left: 2px; }
   .gf-radio-group, .gf-check-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
   .gf-radio, .gf-check {
     display: flex;
@@ -489,7 +504,7 @@
     background: #fff;
     max-width: 480px;
   }
-  .gf-field-value.gf-multiline { white-space: pre-line; line-height: 1.6; }
+  .gf-field-value.gf-multiline { white-space: pre-line; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
   .gf-helper { font-size: 12px; color: #80868b; margin-top: 6px; line-height: 1.5; }
   .gf-item {
     border-left: 3px solid var(--g-red);
@@ -865,9 +880,12 @@
       <h2 class="section-title">직광고주 이관</h2>
     </div>
 
+    <a class="top-link-btn" href="https://support.google.com/google-ads/contact/inv_to_man_auto?hl=ko" target="_blank" rel="noopener">결제방식 변경요청 바로가기 →</a>
+
     <div class="callout callout-red callout-solid-red">
       광고주가 Google에 <strong>직접 결제</strong>하던 계정을,<br>
-      <strong>나스미디어 인보이스(월별 청구) 결제 방식으로 전환하는 절차</strong>입니다.
+      <strong>나스미디어 인보이스(월별 청구) 결제 방식으로 전환하는 절차</strong>입니다.<br>
+      아래 내용은 실제 신청서 화면과 동일하게 재현한 것이니, <strong>표시된 내용 그대로 설정하시면 됩니다.</strong>
     </div>
 
     <div class="content-block">
@@ -1065,7 +1083,7 @@
           <div class="gf-field-label">추가 세부정보</div>
           <div class="gf-field-value gf-multiline">- 기존 결제 프로필ID (12자리) : 나스미디어로 변경 전 현재 결제 프로필ID 입력
 - 기존 결제 정보 이메일 : 광고주 결제 정보 이메일
-========================================================
+------------------------------
 - 신규 결제 프로필ID (12자리) : 4777-6720-7651
 - 신규 결제 정보 이메일 : google@nasmedia.co.kr
 - 변경될 인보이스 결제계정 ID (16자리) : 사용할 팀 인보이스 결제계정 ID</div>
