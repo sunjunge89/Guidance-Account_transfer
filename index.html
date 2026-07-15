@@ -939,9 +939,9 @@
   }
 
   function writeSession(email, approvedAt) {
-    const existing = readSession();
-    const ts = approvedAt || (existing && existing.ts) || Date.now();
-    localStorage.setItem(VERIFIED_KEY, JSON.stringify({ email: email, ts: ts }));
+    // 서버의 approvedAt을 그대로 쓰면, 서버/프론트의 TTL 기준이 어긋날 경우
+    // 저장하자마자 만료된 것으로 판정되는 문제가 생길 수 있어 - 항상 "지금"을 기준으로 저장한다.
+    localStorage.setItem(VERIFIED_KEY, JSON.stringify({ email: email, ts: Date.now() }));
   }
 
   function clearSession() {
