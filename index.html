@@ -350,22 +350,22 @@
   .callout-green { border-left-color: var(--g-green); }
   .callout-solid-red {
     border-left: none;
-    background: #fdecea;
+    background: #f9d3cd;
     border-radius: 12px;
   }
   .callout-solid-blue {
     border-left: none;
-    background: #e8f0fe;
+    background: #d3e3fd;
     border-radius: 12px;
   }
   .callout-solid-yellow {
     border-left: none;
-    background: #fef7e0;
+    background: #fce8b2;
     border-radius: 12px;
   }
   .callout-solid-green {
     border-left: none;
-    background: #e6f4ea;
+    background: #cfead9;
     border-radius: 12px;
   }
   mark {
@@ -411,9 +411,8 @@
   .form-step .ref-list li { color: rgba(17,17,17,0.85); }
 
   /* ---- Google 폼 UI 재현 (텍스트/HTML 목업) ---- */
-  .gf-panel { padding: 28px 0; }
+  .gf-panel { padding: 18px 0; }
   .gf-panel:first-child { padding-top: 4px; }
-  .gf-panel + .gf-panel { border-top: 1.5px solid #eee; }
   .gf-q {
     font-size: 15px;
     font-weight: 600;
@@ -429,12 +428,16 @@
     gap: 12px;
     font-size: 14px;
     color: #3c4043;
-    padding: 7px 10px;
-    border-radius: 8px;
-    margin: 0 -10px;
     line-height: 1.5;
   }
-  .gf-radio.checked, .gf-check.checked { background: #e8f0fe; }
+  .gf-radio.checked > div:last-child,
+  .gf-check.checked > div:last-child {
+    display: inline-block;
+    background: #e8f0fe;
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin: -3px 0;
+  }
   .gf-radio-dot {
     width: 18px; height: 18px;
     border-radius: 50%;
@@ -507,7 +510,7 @@
   }
   .gf-notice .gf-icon { flex-shrink: 0; }
   .gf-tip {
-    background: #e8f0fe;
+    background: #f1f3f4;
     border-radius: 8px;
     padding: 14px 16px;
     font-size: 13px;
