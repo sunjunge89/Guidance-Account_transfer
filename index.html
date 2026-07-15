@@ -353,6 +353,21 @@
     background: #fdecea;
     border-radius: 12px;
   }
+  .callout-solid-blue {
+    border-left: none;
+    background: #e8f0fe;
+    border-radius: 12px;
+  }
+  .callout-solid-yellow {
+    border-left: none;
+    background: #fef7e0;
+    border-radius: 12px;
+  }
+  .callout-solid-green {
+    border-left: none;
+    background: #e6f4ea;
+    border-radius: 12px;
+  }
   mark {
     background: #b3e5fc;
     color: #111;
@@ -480,7 +495,7 @@
   }
   .gf-item:last-child { margin-bottom: 0; }
   .gf-notice {
-    background: #fef7e0;
+    background: #f1f3f4;
     border-radius: 8px;
     padding: 14px 16px;
     font-size: 13px;
@@ -791,7 +806,7 @@
     </div>
 
 
-      <div class="callout">
+      <div class="callout callout-solid-blue">
       타사에서 운영 중인 광고계정을 이관받는 경우,<br>
       <strong>결제수단 변경에 앞서 해당 광고계정을 나스미디어 MCC에 먼저 맵핑 받아야 합니다.</strong>
       </div>
@@ -860,7 +875,7 @@
           <div class="gf-radio-group">
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>한 결제 프로필에서 다른 결제 프로필로 전환(인보이스 이외의 결제 방법에만 해당)</div></div>
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>월별 인보이스에서 수동 또는 자동 결제로 전환</div></div>
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>수동 또는 자동 결제에서 월별 인보이스로 전환</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>수동 또는 자동 결제에서 월별 인보이스로 전환</div></div>
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>인보이스 결제 방식을 유지하되 다른 회사의 월별 인보이스로 변경</div></div>
           </div>
         </div>
@@ -871,7 +886,7 @@
         <div class="gf-item">
           <div class="gf-q">Google에 설정된 이용 한도액이 이미 있으신가요?<span class="req">*</span></div>
           <div class="gf-radio-group">
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>예. 사용하려는 이용 한도액을 이미 받았습니다.</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>예. 사용하려는 이용 한도액을 이미 받았습니다.</div></div>
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>아니요. 새 이용 한도액을 신청하려고 합니다.</div></div>
           </div>
         </div>
@@ -942,7 +957,7 @@
           <div class="gf-helper" style="margin-bottom:10px;">예: 미국에 소재한 주요 대행사</div>
           <div class="gf-radio-group">
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>예</div></div>
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>아니요</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>아니요</div></div>
           </div>
         </div>
       </div>
@@ -963,7 +978,7 @@
           <div class="gf-q">예산 금액<span class="req">*</span></div>
           <div class="gf-radio-group">
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>무제한</div></div>
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>특정 금액</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>특정 금액</div></div>
           </div>
         </div>
         <div class="gf-item">
@@ -974,7 +989,7 @@
         <div class="gf-item">
           <div class="gf-q">예산 시작일/계정 전환일<span class="req">*</span></div>
           <div class="gf-radio-group">
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>이메일을 통한 승인 후 즉각적으로</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>이메일을 통한 승인 후 즉각적으로</div></div>
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>현재 시점 이후의 특정 날짜(용이한 인보이스 처리를 위해 계정의 결제 소유권은 매월 1일자로 변경하는 것이 좋습니다.)</div></div>
           </div>
         </div>
@@ -982,7 +997,7 @@
         <div class="gf-item">
           <div class="gf-q">예산 종료일<span class="req">*</span></div>
           <div class="gf-radio-group">
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>종료일 없음</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>종료일 없음</div></div>
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>현재 시점 이후의 특정 날짜</div></div>
           </div>
         </div>
@@ -993,14 +1008,14 @@
           <div class="gf-q">원하는 결제 설정 구조<span class="req">*</span></div>
           <div class="gf-radio-group">
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>단일 인보이스 - Google Ads 계정의 결제 관리자에서 새 결제 설정을 만들고 Google Ads 계정당 인보이스 1개를 수신합니다.</div></div>
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>통합 인보이스</mark> - 결제 관리자의 통합 결제 설정에 Google Ads 계정을 추가하고, 여러 계정에 대해 하나의 통합 인보이스를 발행합니다.</div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>통합 인보이스 - 결제 관리자의 통합 결제 설정에 Google Ads 계정을 추가하고, 여러 계정에 대해 하나의 통합 인보이스를 발행합니다.</div></div>
           </div>
         </div>
 
         <div class="gf-item">
           <div class="gf-q">이미 통합 결제 설정이 있나요?<span class="req">*</span></div>
           <div class="gf-radio-group">
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>예, 이제 이 Google Ads 계정을 추가하면 됩니다.</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>예, 이제 이 Google Ads 계정을 추가하면 됩니다.</div></div>
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>아니요, 새 결제 설정을 만들어야 합니다.</div></div>
           </div>
         </div>
@@ -1064,7 +1079,7 @@
           <div class="gf-radio-group">
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>전화 또는 이메일</div></div>
             <div class="gf-radio"><div class="gf-radio-dot"></div><div>전화</div></div>
-            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>이메일</mark></div></div>
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>이메일</div></div>
           </div>
         </div>
 
@@ -1087,7 +1102,7 @@
       <h2 class="section-title">대행사&렙 이관</h2>
     </div>
 
-    <div class="callout callout-yellow">
+    <div class="callout callout-yellow callout-solid-yellow">
       타사(대행사·렙)에서 관리하던 <strong>인보이스 결제 계정</strong>을,<br>
       <strong>나스미디어 인보이스로 전환하는 절차</strong>입니다.
     </div>
@@ -1105,7 +1120,7 @@
       <h2 class="section-title">피이관</h2>
     </div>
 
-    <div class="callout callout-green">
+    <div class="callout callout-green callout-solid-green">
       나스미디어 인보이스로 결제하던 계정을,<br>
       <strong>타사(대행사·렙 등)의 직접 결제 방식으로 전환하는 절차</strong>입니다.
     </div>
