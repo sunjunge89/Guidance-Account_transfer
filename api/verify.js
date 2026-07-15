@@ -4,7 +4,7 @@
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVOA4vbxabqczif6EAMwGk4DdMgg5W_yWxGlYaSQv3VJ-VPflCXvAxPClZK_LkX2U3Kw/exec';
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const email = req.query.email;
 
   if (!email) {
@@ -30,6 +30,7 @@ export default async function handler(req, res) {
   try {
     data = JSON.parse(rawText);
   } catch (parseErr) {
+    // Apps Script가 JSON이 아닌 응답(에러 페이지 등)을 준 경우 - 디버깅을 위해 원문 일부를 그대로 노출
     res.status(502).json({
       status: 'error',
       message: 'apps script returned non-json response',
@@ -38,3 +39,7 @@ export default async function handler(req, res) {
     });
     return;
   }
+
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.status(200).json(data);
+}
