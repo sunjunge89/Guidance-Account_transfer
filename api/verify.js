@@ -2,7 +2,7 @@
 // 브라우저 ↔ Google Apps Script(exec) 사이를 중계한다.
 // (2026-07 재설계)
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVOA4vbxabqczif6EAMwGk4DdMgg5W_yWxGlYaSQv3VJ-VPflCXvAxPClZK_LkX2U3Kw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzh4qje_w5-cUANaPEDw3Gayh535anSvwrw4eRWeh1OwR7kOJRIbkATrL1_L05ipS0Hw/exec';
 
 module.exports = async function handler(req, res) {
   const email = req.query.email;
