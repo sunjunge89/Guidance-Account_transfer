@@ -1707,8 +1707,8 @@
     if (!result.ok) return; // 네트워크 오류는 무시 (일시적 오류로 로그아웃시키지 않음)
 
     if (result.status === 'approved') {
-      writeSession(session.email, result.approvedAt);
-      renderAuthUI();
+      // 승인 유지 확인만 하고, 세션 시작 시각(ts)은 건드리지 않는다.
+      // (여기서 writeSession을 다시 호출하면 24시간 타이머가 재검증마다 계속 리셋되는 버그가 발생함)
     } else {
       clearSession();
       renderAuthUI();
