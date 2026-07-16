@@ -1419,13 +1419,22 @@
     document.getElementById(panelId).style.display = 'block';
   }
 
-  function goTo(id) {
+  function renderPageFromHash() {
+    const hash = window.location.hash.replace('#', '') || 'home';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById(id);
+    const target = document.getElementById(hash) || document.getElementById('home');
     if (target) target.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    history.replaceState(null, '', '#' + id);
   }
+
+  function goTo(id) {
+    if (window.location.hash.replace('#', '') !== id) {
+      history.pushState(null, '', '#' + id);
+    }
+    renderPageFromHash();
+  }
+
+  window.addEventListener('popstate', renderPageFromHash);
 
   // ---------------- 타사 전달용 요청서 다운로드 (피이관) ----------------
 
@@ -1444,8 +1453,7 @@
 - 회사 이름 (사업자등록증 기준 법인명) :
 - 회사 대표자 이름 (사업자등록증 기준) :
 - 사업자 등록 주소 :
-- 시 :
-- 도 :
+- 시/도 :
 - 우편번호 :
 - 업태 :
 - 업종 :
@@ -1874,10 +1882,7 @@
 
     checkForVerifyToken();
 
-    const hash = window.location.hash.replace('#', '');
-    if (hash && document.getElementById(hash)) {
-      goTo(hash);
-    }
+    renderPageFromHash();
   });
 </script>
 
