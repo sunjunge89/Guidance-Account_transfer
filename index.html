@@ -1571,9 +1571,23 @@
   }
 
   function logout() {
+    const session = readSession();
     clearSession();
     renderAuthUI();
     goTo('home');
+
+    // 서버 쪽 승인 상태도 함께 무효화 (실패해도 로컬 로그아웃 자체는 이미 완료된 상태)
+    if (session && session.email) {
+      revokeServerApproval_(session.email);
+    }
+  }
+
+  async function revokeServerApproval_(email) {
+    try {
+      await fetch(`${VERIFY_API_URL}?logout=${encodeURIComponent(email)}&_=${Date.now()}`);
+    } catch (e) {
+      // 네트워크 오류는 무시 - 로컬 로그아웃은 이미 완료됨
+    }
   }
 
   // ---------------- 인증 폼 UI ----------------
