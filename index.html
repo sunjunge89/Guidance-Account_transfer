@@ -1632,6 +1632,38 @@
 
   // ---------------- 이벤트 핸들러 ----------------
 
+  let pollIntervalId = null;
+  const POLL_INTERVAL_MS = 4000;      // 4초마다 자동 확인
+  const POLL_MAX_MS = 10 * 60 * 1000; // 토큰 유효시간(10분)과 동일하게 최대 폴링 시간 제한
+
+  function stopPendingPoll() {
+    if (pollIntervalId) {
+      clearInterval(pollIntervalId);
+      pollIntervalId = null;
+    }
+  }
+
+  function startPendingPoll() {
+    stopPendingPoll(); // 혹시 남아있던 이전 폴링 정리 (중복 실행 방지)
+
+    const startedAt = Date.now();
+
+    pollIntervalId = setInterval(async function () {
+      if (Date.now() - startedAt > POLL_MAX_MS) {
+        stopPendingPoll();
+        return;
+      }
+
+      const result = await requestVerification(submittedEmail);
+      if (!result.ok) return; // 네트워크 오류는 무시하고 다음 폴링에서 재시도
+
+      if (result.status === 'approved') {
+        stopPendingPoll();
+        completeVerification(submittedEmail, result.approvedAt);
+      }
+    }, POLL_INTERVAL_MS);
+  }
+
   async function sendCode() {
     const emailInput = document.getElementById('inline-email');
     const email = emailInput ? emailInput.value.trim() : '';
@@ -1663,7 +1695,8 @@
       setSubmitButton('인증 확인하기', true);
       const btn = document.getElementById('inline-submit');
       if (btn) btn.onclick = checkStatus;
-      setFormMessage('📩 입력하신 메일로 인증 링크를 보내드렸어요. 메일함에서 링크를 클릭한 뒤, 아래 버튼으로 확인해주세요.', false);
+      setFormMessage('📩 입력하신 메일로 인증 링크를 보내드렸어요. 메일함에서 링크를 클릭하고 "인증 완료하기"를 눌러주세요. 완료되면 이 화면은 자동으로 넘어갑니다.', false);
+      startPendingPoll();
       return;
     }
 
@@ -1683,15 +1716,17 @@
     }
 
     if (result.status === 'approved') {
+      stopPendingPoll();
       completeVerification(submittedEmail, result.approvedAt);
       return;
     }
 
-    setFormMessage('아직 메일의 링크를 클릭하지 않으신 것 같아요. 메일함(스팸함 포함)을 확인해주세요.', false);
+    setFormMessage('아직 메일의 링크를 클릭하지 않으신 것 같아요. 메일함(스팸함 포함)을 확인해주세요. (자동으로도 계속 확인 중이에요)', false);
     setSubmitButton('인증 확인하기', true);
   }
 
   function completeVerification(email, approvedAt) {
+    stopPendingPoll();
     writeSession(email, approvedAt);
     renderAuthUI();
   }
