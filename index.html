@@ -772,6 +772,15 @@
   <button onclick="logout()">로그아웃</button>
 </div>
 
+<div id="verify-token-overlay" style="display:none; position:fixed; inset:0; background:rgba(17,17,17,0.5); z-index:999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:20px; padding:48px 40px; box-shadow:0 4px 24px rgba(0,0,0,0.15); max-width:380px; text-align:center;">
+    <h2 style="font-size:20px; margin:0 0 12px; color:#111;">임직원 인증</h2>
+    <p id="verify-token-msg" style="font-size:14px; color:#555; line-height:1.6; margin:0 0 24px;">확인 중...</p>
+    <button id="verify-token-btn" onclick="confirmToken()" style="display:none; background:#111; color:#fff; font-size:15px; font-weight:600; border:none; padding:14px 32px; border-radius:999px; cursor:pointer;">인증 완료하기</button>
+    <button onclick="closeVerifyOverlay()" style="display:block; margin:16px auto 0; background:none; border:none; color:#999; font-size:13px; cursor:pointer; text-decoration:underline;">닫기</button>
+  </div>
+</div>
+
 <!-- HOME -->
 <section class="page active" id="home">
   <div class="title-block">
@@ -1770,12 +1779,97 @@
 
   // ---------------- 초기화 ----------------
 
+  // ---------------- 메일 링크 확인 오버레이 (verify_token) ----------------
+
+  let currentVerifyToken = null;
+
+  function closeVerifyOverlay() {
+    const overlay = document.getElementById('verify-token-overlay');
+    if (overlay) overlay.style.display = 'none';
+    // 새로고침해도 다시 안 뜨도록 URL에서 파라미터 제거
+    const url = new URL(window.location.href);
+    url.searchParams.delete('verify_token');
+    history.replaceState(null, '', url.pathname + url.search + url.hash);
+  }
+
+  async function checkForVerifyToken() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('verify_token');
+    if (!token) return;
+
+    currentVerifyToken = token;
+    const overlay = document.getElementById('verify-token-overlay');
+    const msgEl = document.getElementById('verify-token-msg');
+    const btnEl = document.getElementById('verify-token-btn');
+    if (!overlay || !msgEl || !btnEl) return;
+
+    overlay.style.display = 'flex';
+    msgEl.textContent = '확인 중...';
+    btnEl.style.display = 'none';
+
+    let data;
+    try {
+      const res = await fetch(`/api/confirm?token=${encodeURIComponent(token)}&_=${Date.now()}`);
+      data = await res.json();
+    } catch (err) {
+      msgEl.textContent = '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.';
+      return;
+    }
+
+    if (data.valid) {
+      msgEl.innerHTML = `<strong>${data.email}</strong><br>위 계정으로 인증을 완료합니다.<br>아래 버튼을 눌러주세요.`;
+      btnEl.style.display = 'inline-block';
+    } else {
+      msgEl.textContent = data.message || '유효하지 않은 링크입니다.';
+    }
+  }
+
+  async function confirmToken() {
+    if (!currentVerifyToken) return;
+
+    const msgEl = document.getElementById('verify-token-msg');
+    const btnEl = document.getElementById('verify-token-btn');
+    btnEl.disabled = true;
+    btnEl.textContent = '처리 중...';
+
+    let data;
+    try {
+      const res = await fetch('/api/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: currentVerifyToken }),
+      });
+      data = await res.json();
+    } catch (err) {
+      msgEl.textContent = '서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.';
+      btnEl.disabled = false;
+      btnEl.textContent = '인증 완료하기';
+      return;
+    }
+
+    if (data.ok) {
+      msgEl.innerHTML = '🖤 <strong>임직원 인증이 완료되었습니다.</strong><br>이 창은 닫아도 됩니다.';
+      btnEl.style.display = 'none';
+      // 같은 브라우저/기기라면 이 탭에서도 바로 인증된 상태로 반영
+      writeSession(data.email, data.approvedAt);
+      renderAuthUI();
+    } else {
+      msgEl.textContent = data.message || '인증에 실패했습니다.';
+      btnEl.disabled = false;
+      btnEl.textContent = '인증 완료하기';
+    }
+  }
+
+  // ---------------- 초기화 ----------------
+
   window.addEventListener('DOMContentLoaded', function () {
     renderAuthUI();
     setInterval(renderAuthUI, 60 * 1000); // 1분마다 남은 시간 표시 갱신
 
     revalidateWithServer();
     setInterval(revalidateWithServer, 5 * 60 * 1000); // 5분마다 서버 승인 상태 재확인
+
+    checkForVerifyToken();
 
     const hash = window.location.hash.replace('#', '');
     if (hash && document.getElementById(hash)) {
