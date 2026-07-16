@@ -6,15 +6,21 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJMPcJH3yq1vmi
 
 module.exports = async function handler(req, res) {
   const email = req.query.email;
+  const logoutEmail = req.query.logout;
 
-  if (!email) {
-    res.status(400).json({ status: 'error', message: 'email is required' });
+  let targetParam;
+  if (logoutEmail) {
+    targetParam = `logout=${encodeURIComponent(logoutEmail)}`;
+  } else if (email) {
+    targetParam = `email=${encodeURIComponent(email)}`;
+  } else {
+    res.status(400).json({ status: 'error', message: 'email 또는 logout 파라미터가 필요합니다.' });
     return;
   }
 
   // 캐시버스팅 파라미터(_) 추가로 Google 프록시단 캐시 회피
   // 주의: Node(undici) fetch는 { cache: 'no-store' } 옵션을 지원하지 않아 함수가 크래시 나므로 사용하지 않는다.
-  const targetUrl = `${APPS_SCRIPT_URL}?email=${encodeURIComponent(email)}&_=${Date.now()}`;
+  const targetUrl = `${APPS_SCRIPT_URL}?${targetParam}&_=${Date.now()}`;
 
   let response;
   try {
