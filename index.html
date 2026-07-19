@@ -514,6 +514,7 @@
   }
   .gf-item:last-child { margin-bottom: 0; }
   .gf-item-green { border-left-color: var(--g-green); }
+  .gf-item-yellow { border-left-color: var(--g-yellow); }
   .gf-notice {
     background: #f1f3f4;
     border-radius: 8px;
@@ -1139,12 +1140,99 @@
     </div>
 
     <div class="callout callout-yellow callout-solid-yellow">
-      타사(대행사·렙) 인보이스를,
-      <strong>나스미디어 인보이스로 전환하는 절차</strong>입니다.
+      타사(대행사·렙) 인보이스를, <strong>나스미디어 인보이스로 전환하는 절차</strong>입니다.<br>
+      아래 화면 예시를 참고하여 실제 Google Ads 화면에서 동일하게 진행해 주세요.<br><br>
+      <strong>📍진행 위치</strong> &nbsp;외부 지원 신청서가 아니라, <strong>Google Ads 계정 내 [결제 → 결제 정보 변경 내역]</strong>에서 직접 진행합니다.
+    </div>
+
+    <div class="content-block">
+
+      <div class="gf-panel">
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-q">결제 책임자 이전 유형 선택</div>
+        </div>
+        <div class="gf-radio-group">
+          <div class="gf-radio"><div class="gf-radio-dot"></div><div>내부 결제 책임자 이전</div></div>
+          <div class="gf-radio checked"><div class="gf-radio-dot"></div><div>외부 결제 책임자 이전</div></div>
+        </div>
+        <div class="gf-helper" style="margin-bottom:16px;">같은 결제 프로필 내부 이동이 아니라 <strong>타사 → 나스미디어</strong>처럼 조직이 바뀌는 경우이므로 <mark>외부 결제 책임자 이전</mark>을 선택합니다.</div>
+        <div class="gf-btn">다음</div>
+      </div>
+
+      <div class="gf-panel">
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-field-label">관리자 계정 ID<span class="req">*</span></div>
+          <div class="gf-field-value">나스미디어의 계정이 관리될 팀 MCC ID</div>
+          <div class="gf-helper">관리자 계정 ID는 123-456-7689 형식을 따라야 합니다. 입력한 계정 ID는 계정의 결제 관리자가 됩니다.</div>
+        </div>
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-field-label">이메일 주소 (선택사항)</div>
+          <div class="gf-field-value">나스미디어 계정 관리 팀 MCC 접속 이메일</div>
+          <div class="gf-helper">이메일 주소는 customer@gmail.com 패턴을 따라야 합니다. 입력한 이메일 주소는 결제자 변경 요청에 관해 연락받는 담당자입니다.</div>
+        </div>
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-field-label">향후 결제자 이름<span class="req">*</span></div>
+          <div class="gf-field-value">주식회사 케이티나스미디어</div>
+          <div class="gf-helper">결제자 이름은 Google에서 요청의 적법성을 확인하고 요청이 올바른 대행사로 이전되고 있는지 확인하는 데 도움이 됩니다.</div>
+        </div>
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-q">이전 날짜<span class="req">*</span></div>
+          <div class="gf-radio-group">
+            <div class="gf-radio checked"><div class="gf-radio-dot"></div><div><mark>최대한 빨리</mark></div></div>
+            <div class="gf-radio"><div class="gf-radio-dot"></div><div>맞춤</div></div>
+          </div>
+          <div class="gf-helper">미결제 인보이스가 자동으로 재청구되려면 선택한 이전 날짜가 해당 월의 첫 번째 날이어야 합니다.</div>
+        </div>
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-field-label">참고 (선택사항)</div>
+          <div class="gf-field-value">기존 대행사의 결제프로필 ID(12자리) 입력</div>
+          <div class="gf-helper">향후 결제자에게 메모가 전송됩니다.</div>
+        </div>
+        <div class="gf-btn">요청 제출</div>
+      </div>
+
+      <div class="gf-panel">
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-q">결제 정보 변경 내역 화면</div>
+          <div class="gf-helper">이관 대상 계정에서 좌측 메뉴 <strong>[결제 → 결제 정보 변경 내역]</strong>으로 이동하면 아래와 같은 화면이 보입니다.</div>
+        </div>
+        <div class="gf-field-value" style="max-width:100%; padding:0; border:none;">
+          <div style="border:1px solid #dadce0; border-radius:8px; overflow:hidden;">
+            <div style="display:flex; background:#f8f9fa; font-size:13px; font-weight:600; color:#5f6368; padding:10px 16px; border-bottom:1px solid #dadce0;">
+              <div style="flex:1.4;">인보이스 설정</div>
+              <div style="flex:1;">결제 설정</div>
+              <div style="flex:1;">결제 프로필</div>
+            </div>
+            <div style="display:flex; font-size:13px; color:#3c4043; padding:12px 16px;">
+              <div style="flex:1.4;">TEST 인보이스(나스_미디어컨설팅2팀_테스트)<br><span style="color:#80868b;">현재</span></div>
+              <div style="flex:1;">월별 인보이스</div>
+              <div style="flex:1;">(주)나스미디어</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gf-panel">
+        <div class="gf-item gf-item-yellow">
+          <div class="gf-q">"+" 버튼 클릭 → 지불자 변경 선택</div>
+          <div class="gf-helper">화면 상단의 파란색 <strong>"+"</strong> 버튼을 클릭하면 아래 메뉴가 나타납니다. <mark>"지불자 변경"</mark>을 선택하세요.</div>
+        </div>
+        <div class="gf-field-value" style="max-width:280px; padding:0; border:1px solid #dadce0; border-radius:8px; overflow:hidden;">
+          <div style="padding:10px 16px; font-size:13px; color:#3c4043; display:flex; align-items:center; gap:8px; background:#e8f0fe;">
+            <span style="color:var(--g-blue); font-weight:700;">+</span> 지불자 변경
+          </div>
+          <div style="padding:10px 16px; font-size:13px; color:#3c4043; display:flex; align-items:center; gap:8px; border-top:1px solid #eee;">
+            <span style="color:var(--g-blue); font-weight:700;">+</span> 인보이스 설정 변경
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
 </section>
+
+
 
 <section class="page" id="reverse-transfer">
   <div class="section-wrap">
