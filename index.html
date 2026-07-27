@@ -2355,7 +2355,7 @@
     }
 
     if (data.ok) {
-      msgEl.innerHTML = '🖤 <strong>임직원 인증이 완료되었습니다.</strong><br>이 창은 닫아도 됩니다.';
+      msgEl.innerHTML = '🖤<strong>임직원 인증이 완료되었습니다.</strong>';
       btnEl.style.display = 'none';
       // 같은 브라우저/기기라면 이 탭에서도 바로 인증된 상태로 반영
       writeSession(data.email, data.approvedAt);
